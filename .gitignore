@@ -1,0 +1,102 @@
+# ------------------------------ #
+# ---------- General ----------- #
+# ------------------------------ #
+
+# OS
+# Ref: https://github.com/github/gitignore/blob/main/Global/macOS.gitignore
+# Ref: https://github.com/github/gitignore/blob/main/Global/Windows.gitignore
+# Ref: https://github.com/github/gitignore/blob/main/Global/Linux.gitignore
+.DS_Store
+Thumbs.db
+*.sh
+*.bat
+
+# Editors
+# Ref: https://github.com/github/gitignore/blob/main/Global
+# Ref: https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+# Ref: https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
+# Ref: https://github.com/github/gitignore/blob/main/Global/SublimeText.gitignore
+.history
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+
+# ------------------------------ #
+# --------- JavaScript --------- #
+# ------------------------------ #
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Bower dependency directory (https://bower.io/)
+bower_components/
+
+# Dependency directories
+jspm_packages/
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache/
+
+# Optional stylelint cache
+.stylelintcache/
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache/
+.parcel-cache/
+
+# ------------------------------ #
+# ------------ *** ------------- #
+# ------------------------------ #
+
+# aureliajs
+aureliajs/.cache
+aureliajs/.fusebox
+aureliajs/.nyc_output
+aureliajs/.swc
+aureliajs/dist
+aureliajs/scripts
+aureliajs/src/environment.ts
+aureliajs/test/coverage-jest
+aureliajs/test/coverage-karma
+aureliajs/cypress/videos
+aureliajs/cypress/screenshots
+aureliajs/test-results
+aureliajs/playwright-report
+aureliajs/coverage
+#aureliajs/index.html
+
+# adonisjs
+adonisjs/.env
+adonisjs/.env.testing
+adonisjs/tmp
+adonisjs/build
+adonisjs/coverage
+adonisjs/public/scripts
+adonisjs/database/development.sqlite
+
+# koajs
+#PLACEHOLDER
