@@ -1,0 +1,41 @@
+# ------------------------------ #
+#            General             #
+# ------------------------------ #
+
+# OS
+.DS_STORE
+Thumbs.db
+*.sh
+*.bat
+
+# Editors
+.history
+.idea
+.vscode/*
+*.sublime-workspace
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Dependencies
+node_modules
+package-lock.json
+
+# ------------------------------ #
+#           Aurelia.js           #
+# ------------------------------ #
+
+# Compiled files
+aureliajs/scripts
+aureliajs/src/environment.js
+aureliajs/src/environment.ts
+aureliajs/dist
+aureliajs/test/coverage-jest
+aureliajs/test/coverage-karma
+
+# ------------------------------ #
+#             Koa.js             #
+# ------------------------------ #
+
+# PLACEHOLDER
