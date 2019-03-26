@@ -1,0 +1,44 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				".svn",
+				".git",
+				".hg",
+				"CVS",
+				"aureliajs",
+				"koajs"
+			],
+			"name": "root",
+			"path": "."
+		},
+		{
+			"folder_exclude_patterns":
+			[
+				"documentation",
+				"node_modules",
+				"scripts"
+			],
+			"name": "aureliajs",
+			"path": "aureliajs"
+		},
+    {
+      "folder_exclude_patterns":
+      [
+        "documentation",
+        "node_modules"
+      ],
+      "name": "koajs",
+      "path": "koajs"
+    }
+	],
+	"settings":
+	{
+		"SublimeLinter.linters.eslint.working_dir": "${file_path}",
+		"SublimeLinter.linters.stylelint.working_dir": "${file_path}",
+		"default_line_ending": "unix",
+		"tab_size": 2
+	}
+}
