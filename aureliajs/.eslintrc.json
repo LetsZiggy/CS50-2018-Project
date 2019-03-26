@@ -1,0 +1,26 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "mongo": true,
+    "jasmine": true
+  },
+  "extends": "standard",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "rules": {
+    "no-useless-computed-key": 1,
+    "no-new-func": 1,
+    "object-curly-spacing": [2, "always"],
+    "brace-style": [2, "stroustrup", { "allowSingleLine": true }],
+    "comma-dangle": [2, "always-multiline"],
+    "no-multiple-empty-lines": ["error", { "max": 3, "maxEOF": 1, "maxBOF": 1 }]
+  },
+  "globals": {
+    "use": true
+  }
+}

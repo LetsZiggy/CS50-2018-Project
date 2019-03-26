@@ -1,0 +1,4 @@
+**/*
+!aurelia_project/**/*
+!src/**/*
+!test/**/*

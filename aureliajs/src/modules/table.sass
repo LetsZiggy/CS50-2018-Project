@@ -1,0 +1,915 @@
+div.container
+  flex-flow: column nowrap
+  justify-content: center
+  align-items: center
+  align-content: center
+
+  div.table
+    display: flex
+    width: 100%
+    height: 100%
+    position: relative
+    flex-flow: row nowrap
+    justify-content: flex-start
+    align-items: center
+    align-content: center
+    margin: 0rem
+    padding: 0rem
+    box-sizing: border-box
+    overflow: hidden
+
+    span.form-error
+      display: block
+      width: auto
+      height: 1.5rem
+      position: absolute
+      left: calc(7.5% + 27.5%)
+      top: 10%
+      z-index: 10
+      transform: translate(-50%, -100%)
+      padding: 0rem
+      margin: 0rem
+      box-sizing: border-box
+      font-size: 0.85rem
+      line-height: 0.85rem
+      color: rgb(178,34,34)
+      user-select: none
+
+    div.dm,
+    div.player
+      display: none
+      flex-basis: calc(55% + 7.5%)
+      height: 100%
+      position: relative
+      z-index: 0
+      flex-flow: column nowrap
+      justify-content: flex-start
+      align-items: flex-end
+      align-content: flex-start
+      margin: 0rem
+      padding: 0rem
+      box-sizing: border-box
+      overflow: hidden
+
+      input#show-dm-battle:checked ~ div#dm-menu label#label-dm-battle,
+      input#show-dm-table:checked ~ div#dm-menu label#label-dm-table,
+      input#show-dm-settings:checked ~ div#dm-menu label#label-dm-settings,
+      input#show-player-battle:checked ~ div#player-menu label#label-player-battle,
+      input#show-player-character:checked ~ div#player-menu label#label-player-character,
+      input#show-player-settings:checked ~ div#player-menu label#label-player-settings
+        z-index: 3
+        border-bottom: 1px solid rgb(252,252,252)
+        background-color: rgb(252,252,252)
+        cursor: default
+
+      input#show-dm-battle:checked ~ div#dm-main div#dm-battle,
+      input#show-dm-table:checked ~ div#dm-main form#dm-table,
+      input#show-dm-settings:checked ~ div#dm-main div#dm-settings,
+      input#show-player-battle:checked ~ div#player-main div#player-battle,
+      input#show-player-character:checked ~ div#player-main form#player-character,
+      input#show-player-settings:checked ~ div#player-main div#player-settings
+        display: block
+
+      div#dm-menu,
+      div#player-menu
+        display: flex
+        width: 88%
+        height: 1.5rem
+        position: relative
+        top: 10%
+        flex-flow: row nowrap
+        justify-content: flex-end
+        align-items: flex-start
+        align-content: flex-start
+        margin: 0rem
+        padding: 0rem
+        box-sizing: border-box
+        overflow: hidden
+
+        div.name
+          display: flex
+          width: auto
+          height: 1.5rem
+          position: relative
+          z-index: 3
+          margin: 0rem auto 0rem 0.25rem
+          padding: 0rem
+          flex-flow: column nowrap
+          justify-content: center
+          align-items: center
+          align-content: center
+          line-height: 1rem
+          font-size: 1rem
+          font-weight: bolder
+
+        label.tab-label
+          display: block
+          width: auto
+          height: 1.5rem
+          float: right
+          position: relative
+          z-index: 0
+          margin: 0rem 0.25rem 0rem 0rem
+          padding: 0rem 0.25rem
+          box-sizing: border-box
+          border: 1px solid rgb(204,204,204)
+          background-color: rgb(222,222,222)
+          color: rgb(70,130,180)
+          line-height: 1.5rem
+          font-size: 0.75rem
+          font-weight: bolder
+          text-transform: uppercase
+          cursor: pointer
+          user-select: none
+
+        label#label-dm-settings,
+        label#label-player-settings
+          margin: 0rem 0.5rem 0rem 0rem
+
+        label.tab-label:hover
+          background-color: rgb(244,244,244)
+
+      div#dm-main,
+      div#player-main
+        display: block
+        width: 88%
+        height: calc(80% - 1.5rem)
+        position: relative
+        top: 10%
+        z-index: 0
+        box-sizing: border-box
+        border: 1px solid rgba(248,248,248,0.5)
+        box-shadow: -0.25rem 0.25rem 1.5rem -0.75rem rgb(33,33,33)
+        overflow: hidden
+
+        div#dm-battle,
+        form#dm-table,
+        div#dm-settings,
+        div#player-battle,
+        form#player-character,
+        div#player-settings
+          display: none
+          width: 100%
+          height: 100%
+          position: relative
+          margin: 0rem
+          padding: 0rem
+          box-sizing: border-box
+          overflow-x: hidden
+          overflow-y: auto
+
+          div.form-control
+            display: block
+            width: 100%
+            height: auto
+            margin: 0rem
+            padding: 0.25rem 0.5rem
+            box-sizing: border-box
+            border: none
+            text-align: right
+
+            label.cancel,
+            input[type="submit"]
+              display: inline-block
+              width: auto
+              height: 1.5rem
+              padding: 0rem 0.25rem
+              box-sizing: border-box
+              border-radius: 3px
+              background-color: rgb(252,252,252)
+              line-height: 1.5rem
+              font-size: 0.75rem
+              font-weight: bolder
+              text-transform: uppercase
+              cursor: pointer
+              user-select: none
+
+            label.cancel
+              margin: 0.25rem 0.5rem 0.25rem 0.25rem
+              border: 1px solid rgb(178,34,34)
+              color: rgb(178,34,34)
+
+            input[type="submit"]
+              margin: 0.25rem 0rem
+              border: 1px solid rgb(70,130,180)
+              color: rgb(70,130,180)
+
+            label.cancel:hover,
+            input[type="submit"]:hover
+              color: rgb(252,252,252)
+
+            label.cancel:hover,
+              border: 1px solid rgb(178,34,34)
+              background-color: rgb(178,34,34)
+
+            input[type="submit"]:hover
+              border: 1px solid rgb(70,130,180)
+              background-color: rgb(70,130,180)
+
+          div.row
+            display: block
+            width: 100%
+            height: auto
+            position: relative
+            margin: 0rem
+            box-sizing: border-box
+            border: none
+            overflow: hidden
+
+            div.column
+              display: block
+              height: auto
+              position: relative
+              margin: 0rem
+              padding: 0rem
+              box-sizing: border-box
+              border: none
+              overflow: hidden
+
+              div.form-group
+                display: block
+                width: 100%
+                height: auto
+                position: relative
+                margin: 1rem 0rem
+                padding: 0rem 1rem
+                box-sizing: border-box
+                border: none
+
+                label.title[for]
+                  cursor: pointer
+
+                label.title.primary,
+                label.title.secondary,
+                div.data-primary,
+                div.data-secondary,
+                div.buttons
+                  display: block
+                  width: 100%
+                  height: auto
+                  padding: 0rem
+                  box-sizing: border-box
+                  font-size: 0.85rem
+                  line-height: 0.85rem
+                  text-align: left
+                  user-select: none
+
+                  span.is-proficient
+                    display: inline-block
+                    width: auto
+                    height: 1rem
+                    margin: 0rem 0.25rem 0rem 0rem
+                    padding: 0rem
+                    box-sizing: border-box
+                    font-size: 0.85rem
+                    line-height: 0.85rem
+
+                  span.colour-marker
+                    display: inline-block
+                    width: auto
+                    height: auto
+                    margin: 0rem 0.25rem
+                    padding: 0rem
+                    box-sizing: border-box
+                    background-color: rgb(252,252,252)
+
+                  span.colour-marker.blue::before
+                    content: " "
+                    display: inline-block
+                    width: 0.65rem
+                    height: 0.65rem
+                    border-radius: 50%
+                    background-color: rgb(70,130,180)
+
+                  span.colour-marker.green::before
+                    content: " "
+                    display: inline-block
+                    width: 0.65rem
+                    height: 0.65rem
+                    border-radius: 50%
+                    background-color: rgb(0,255,0)
+
+                label.title.primary,
+                div.data-primary
+                  margin: 0rem
+                  color: rgb(0,0,0)
+
+                label.title.primary.larger
+                  min-height: 1.5rem
+                  font-size: 0.85rem
+                  line-height: 1.4rem
+
+                label.title.primary.smaller
+                  min-height: 1.5rem
+                  font-size: 0.7rem
+                  line-height: 0.7rem
+
+                label.title.secondary,
+                div.data-secondary
+                  margin: 0.5rem 0rem 0rem 0rem
+                  color: rgb(153,153,153)
+
+                div.data-secondary.inline-flex
+                  display: inline-flex
+                  flex-flow: row wrap
+                  justify-content: flex-start
+                  align-items: flex-start
+                  align-content: flex-start
+
+                  div.line
+                    display: inline-block
+                    height: auto
+                    box-sizing: border-box
+                    color: rgb(128,128,128)
+                    font-weight: normal
+                    user-select: text
+
+                  div.line.w50
+                    flex-basis: calc(50% - 0.5rem)
+                    margin: 0rem
+
+                  div.line.w50:nth-child(odd)
+                    padding: 0rem 0.5rem 0.5rem 0rem
+
+                  div.line.w50:nth-child(even)
+                    padding: 0rem 0rem 0.5rem 0.5rem
+
+                  div.line.w100
+                    flex-basis: 100%
+                    margin: 0.25rem 0rem 0rem 0rem
+
+                  div.line.w100:first-child
+                    margin: 0rem
+
+                  div.line.outer,
+                  div.line.inner
+                    width: 100%
+
+                  div.line.outer + div.line.outer
+                    border-top: 1px solid rgb(153,153,153)
+                    margin: 0.5rem 0rem 0rem 0rem
+                    padding: 0.5rem 0rem 0rem 0rem
+
+                  div.line.inner.underline
+                    margin: 0rem 0rem 0.25rem 0rem
+                    color: rgb(98,98,98)
+                    text-decoration: underline
+
+                div.buttons
+                  padding: 0.5rem 0rem 0rem 0rem
+                  margin: 0rem
+                  font-size: 1rem
+                  line-height: 1rem
+
+                  button.ability-check,
+                  button.skill-check,
+                  button.ability-save
+                    width: auto
+                    height: 1.15rem
+                    padding: 0.25rem
+                    box-sizing: border-box
+                    border-radius: 3px
+                    border: 1px solid rgb(70,130,180)
+                    background-color: rgb(252,252,252)
+                    color: rgb(70,130,180)
+                    line-height: 0.65rem
+                    font-size: 0.65rem
+                    font-weight: bolder
+                    text-transform: uppercase
+                    cursor: pointer
+                    user-select: none
+
+                  button.ability-check,
+                  button.skill-check
+                    margin: 0rem 0.25rem 0rem 0rem
+
+                  button.ability-save
+                    margin: 0rem
+
+                  button.ability-check:hover,
+                  button.skill-check:hover,
+                  button.ability-save:hover
+                    border: 1px solid rgb(70,130,180)
+                    background-color: rgb(70,130,180)                    
+                    color: rgb(255,255,255)
+
+                div.title-row
+                  display: flex
+                  width: 100%
+                  height: auto
+                  flex-flow: row nowrap
+                  justify-content: flex-start
+                  align-items: flex-start
+                  align-content: flex-start
+                  padding: 0rem
+                  margin: 0.25rem 0rem
+                  box-sizing: border-box
+                  border: none
+
+                  label.title.primary
+                    display: inline-block
+                    margin: 0rem
+                    padding: 0rem
+                    box-sizing: border-box
+                    color: rgb(105,105,105)
+                    font-size: 0.85rem
+                    line-height: 0.85rem
+                    text-align: left
+                    user-select: none
+                    cursor: pointer
+
+                  span.modifier,
+                  span.error
+                    display: inline-block
+                    box-sizing: border-box
+                    font-size: 0.85rem
+                    line-height: 0.85rem
+                    text-align: left
+                    user-select: none
+
+                  span.modifier
+                    padding: 0rem 0.25rem
+                    margin: 0.25rem 0rem
+                    color: rgb(153,153,153)
+
+                  span.error
+                    padding: 0rem 0.25rem
+                    margin: 0rem
+                    color: rgb(178,34,34)
+
+                div.input-row
+                  display: flex
+                  width: 100%
+                  height: auto
+                  flex-flow: row nowrap
+                  justify-content: flex-start
+                  align-items: center
+                  align-content: flex-start
+                  padding: 0rem
+                  margin: 0rem
+
+                  select
+                    width: 80%
+                    height: 1.5rem
+                    padding: 0.15rem 0.25rem
+                    margin: 0.5rem 0rem
+                    box-sizing: border-box
+                    border: 1px solid rgba(70,130,180,0.15)
+                    background: rgb(252,252,252) url("select-arrow.svg") no-repeat scroll right center
+                    color: rgb(0,0,0)
+                    line-height: 0.85rem
+                    font-size: 0.85rem
+                    cursor: pointer
+                    appearance: none
+
+                  select:hover
+                    border: 1px solid rgba(70,130,180,1)
+
+                  button
+                    width: auto
+                    height: 1.5rem
+                    padding: 0rem 0.25rem
+                    margin: 0.5rem 0rem 0.5rem 0.25rem
+                    box-sizing: border-box
+                    border-radius: 3px
+                    background-color: rgb(252,252,252)
+                    line-height: 0.65rem
+                    font-size: 0.65rem
+                    font-weight: bolder
+                    text-transform: uppercase
+                    cursor: pointer
+                    user-select: none
+
+                  button.add
+                    border: 1px solid rgb(70,130,180)
+                    color: rgb(70,130,180)
+
+                  button.remove,
+                  button.resign
+                    border: 1px solid rgb(178,34,34)
+                    color: rgb(178,34,34)
+
+                  button.add:hover
+                    border: 1px solid rgb(70,130,180)
+                    background-color: rgb(70,130,180)                    
+                    color: rgb(255,255,255)
+
+                  button.remove:hover,
+                  button.resign:hover
+                    border: 1px solid rgb(178,34,34)
+                    background-color: rgb(178,34,34)
+                    color: rgb(255,255,255)
+
+                  button.add:disabled,
+                  button.add:hover:disabled,
+                  button.remove:disabled,
+                  button.remove:hover:disabled,
+                  button.resign:disabled,
+                  button.resign:hover:disabled
+                    border: 1px solid rgb(153,153,153)
+                    background-color: rgb(252,252,252)
+                    color: rgb(153,153,153)
+                    cursor: default
+
+                  span.detail
+                    align-self: flex-end
+                    width: 25%
+                    height: auto
+                    padding: 0rem 0rem 0.5rem 0.25rem
+                    margin: 0rem
+                    box-sizing: border-box
+                    color: rgb(153,153,153)
+                    font-size: 0.85rem
+                    line-height: 0.85rem
+
+                  input[type="number"]
+                    width: 75%
+                    height: auto
+                    padding: 0.5rem
+                    margin: 0.5rem 0rem
+                    box-sizing: border-box
+                    border: none
+                    border-bottom: 1px solid rgb(153,153,153)
+                    background-color: rgb(252,252,252)
+                    color: rgb(0,0,0)
+                    font-size: 1rem
+                    line-height: 1rem
+
+                  input[type="number"]:focus
+                    border-bottom: 1px solid rgb(70,130,180)
+
+                  div.row-container
+                    display: flex
+                    height: 100%
+                    flex-flow: column nowrap
+                    justify-content: flex-start
+                    align-items: flex-start
+                    align-content: flex-start
+                    padding: 0rem
+                    margin: 0rem
+                    box-sizing: border-box
+
+                    label.title.secondary
+                      display: inline-block
+                      width: 5rem
+                      height: auto
+                      margin: 0.5rem 0rem 0rem 0rem
+                      padding: 0rem
+                      box-sizing: border-box
+                      font-size: 0.85rem
+                      line-height: 0.85rem
+                      text-align: left
+                      color: rgb(153,153,153)
+                      user-select: none
+
+                    div.input-row
+                      display: flex
+                      width: 100%
+                      height: auto
+                      flex-flow: row nowrap
+                      justify-content: flex-start
+                      align-items: center
+                      align-content: flex-start
+                      padding: 0rem
+                      margin: 0rem
+
+                      span.detail
+                        align-self: flex-end
+                        width: 25%
+                        height: auto
+                        padding: 0rem 0rem 0.5rem 0.25rem
+                        margin: 0rem
+                        box-sizing: border-box
+                        color: rgb(153,153,153)
+                        font-size: 0.85rem
+                        line-height: 0.85rem
+
+                      input[type="number"]
+                        width: 75%
+                        height: auto
+                        padding: 0.5rem
+                        margin: 0.5rem 0rem
+                        box-sizing: border-box
+                        border: none
+                        border-bottom: 1px solid rgb(153,153,153)
+                        background-color: rgb(252,252,252)
+                        color: rgb(0,0,0)
+                        font-size: 1rem
+                        line-height: 1rem
+
+                      input[type="number"]:focus
+                        border-bottom: 1px solid rgb(70,130,180)
+
+                  div.row-container.w20
+                    width: 20%
+
+                  div.row-container.w50
+                    width: 50%
+
+                input[type="text"],
+                input[type="number"]
+                  width: 100%
+                  height: auto
+                  padding: 0.25rem
+                  margin: 0.25rem 0rem
+                  box-sizing: border-box
+                  border: none
+                  border-bottom: 1px solid rgb(153,153,153)
+                  background-color: rgb(252,252,252)
+                  color: rgb(0,0,0)
+                  font-size: 1rem
+                  line-height: 1rem
+
+                input[type="text"]:focus,
+                input[type="number"]:focus
+                  border-bottom: 1px solid rgb(70,130,180)
+
+                input[type="checkbox"]:checked ~ label.label-checkbox
+                  color: rgb(0,0,0)
+
+                input[type="checkbox"]:checked ~ label.label-checkbox::after
+                  background-color: rgb(70,130,180)
+
+                input[type="checkbox"]:checked ~ label.label-checkbox:hover::after
+                  border: 2px solid rgba(178,34,34,0.5)
+                  background-color: rgba(178,34,34,0.5)
+
+                label.label-checkbox
+                  display: inline-flex
+                  width: auto
+                  height: 100%
+                  flex-flow: row nowrap
+                  justify-content: center
+                  align-items: center
+                  align-content: flex-start
+                  padding: 0.15rem 0.25rem
+                  margin: 0rem
+                  box-sizing: border-box
+                  color: rgb(105,105,105)
+                  font-size: 0.85rem
+                  line-height: 0.85rem
+                  text-align: left
+                  cursor: pointer
+                  user-select: none
+
+                label.label-checkbox::after
+                  content: ""
+                  display: inline-block
+                  width: 1rem
+                  height: 1rem
+                  margin: 0rem 0rem 0rem 0.5rem
+                  padding: 0rem
+                  box-sizing: border-box
+                  border-radius: 3px
+                  border: 2px solid rgb(70,130,180)
+                  background-color: rgb(252,252,252)
+                  cursor: pointer
+
+                label.label-checkbox:hover
+                  color: rgb(0,0,0)
+
+                label.label-checkbox:hover::after
+                  background-color: rgba(70,130,180,0.5)
+
+                textarea
+                  width: 100%
+                  height: 10rem
+                  padding: 0.1rem 0.25rem
+                  margin: 0.5rem 0rem 0rem 0rem
+                  box-sizing: border-box
+                  border: 1px solid rgb(153,153,153)
+                  background-color: rgb(252,252,252)
+                  color: rgb(0,0,0)
+                  font-size: 1rem
+                  line-height: 1rem
+                  resize: none
+
+              div.form-group.w75
+                width: 75%
+
+              div.form-group.before
+                margin-bottom: 0rem
+
+              div.form-group.after
+                margin-top: 0rem
+
+            div.column.solo
+              width: 100%
+
+            div.column.left
+              width: 50%
+
+            div.column.center
+              width: 34%
+
+            div.column.right
+              width: 50%
+
+          div.row.single
+            padding: 0rem calc(12.5% - 1rem)
+
+          div.row.double
+            display: flex
+            flex-flow: row nowrap
+            justify-content: flex-start
+            align-items: flex-start
+            align-content: flex-start
+            padding: 0rem calc(12.5% - 1rem)
+
+          div.row.triple
+            display: flex
+            flex-flow: row nowrap
+            justify-content: flex-start
+            align-items: flex-start
+            align-content: flex-start
+            padding: 0rem calc(12.5% - 1rem)
+
+            div.column.left
+              width: 33%
+
+            div.column.center
+              width: 34%
+
+            div.column.right
+              width: 33%
+
+          div.row:last-child
+            padding-bottom: 5rem
+
+    div.messages
+      display: flex
+      flex-basis: 30%
+      height: 85%
+      position: relative
+      z-index: 5
+      flex-flow: column nowrap
+      justify-content: flex-start
+      align-items: flex-start
+      align-content: flex-start
+      margin: 0rem
+      padding: 0rem
+      box-sizing: border-box
+      border: none
+      box-shadow: 0.25rem 0.5rem 4rem -0.75rem rgb(153,153,153)
+      overflow: visible
+
+      div#message-list-empty,
+      div#message-list-group
+        flex-grow: 1
+        display: flex
+        width: 100%
+        flex-basis: 50%
+        position: relative
+        flex-flow: column nowrap
+        justify-content: flex-start
+        align-items: flex-start
+        align-content: flex-start
+        margin: 0rem
+        padding: 0.25rem
+        box-sizing: border-box
+        overflow-x: hidden
+        overflow-y: auto
+
+        div.message
+          width: 100%
+          height: auto
+          margin: 0rem
+          padding: 0rem
+          box-sizing: border-box
+
+          div.sender
+            margin: 0rem
+            padding: 0.5rem 0rem
+            color: rgb(0,0,0)
+            line-height: 0.85rem
+            font-size: 0.85rem
+            font-weight: bolder
+
+          div.line
+            margin: 0rem
+            padding: 0rem 0.5rem
+            color: rgb(128,128,128)
+            line-height: 0.85rem
+            font-size: 0.85rem
+            font-weight: normal
+
+          div.line:last-child
+            margin-bottom: 0.5rem
+
+        div.message + div.message
+          border-top: 1px solid rgb(240,240,240)
+
+      div#message-input-group
+        display: block
+        width: 100%
+        flex-basis: 6.5rem
+        position: relative
+        margin: 0rem
+        padding: 0rem
+        box-sizing: border-box
+        overflow: visible
+
+        textarea#message-input
+          width: 100%
+          height: 100%
+          position: absolute
+          left: 0rem
+          top: 0rem
+          z-index: 5
+          padding: 0.25rem
+          margin: 0rem
+          box-sizing: border-box
+          border: 1px solid rgb(240,240,240)
+          background-color: rgb(252,252,252)
+          color: rgb(0,0,0)
+          font-size: 0.85rem
+          line-height: 0.85rem
+          resize: none
+
+        textarea#message-input::placeholder
+          font-size: 0.85rem
+
+        select#add-statistic-item
+          flex-grow: 1
+          width: calc(100% - 3rem)
+          height: 1.5rem
+          position: absolute
+          left: 0rem
+          bottom: 0rem
+          z-index: 5
+          padding: 0.15rem 0.25rem
+          margin: 0rem
+          box-sizing: border-box
+          border: 1px solid rgba(70,130,180,0.15)
+          background: rgb(252,252,252) url("select-arrow.svg") no-repeat scroll right center
+          color: rgb(0,0,0)
+          line-height: 0.85rem
+          font-size: 0.85rem
+          cursor: pointer
+          appearance: none
+
+        select#add-statistic-item.added
+          border: 1px solid rgb(0,255,0)
+
+        select#add-statistic-item.not-added
+          border: 1px solid rgb(255,0,0)
+
+        select#add-statistic-item:hover
+          border: 1px solid rgba(70,130,180,1)
+
+        button#message-send
+          width: 3rem
+          height: 1.5rem
+          position: absolute
+          right: 0rem
+          bottom: 0rem
+          z-index: 10
+          margin: 0rem
+          padding: 0rem
+          box-sizing: border-box
+          border: 1px solid rgb(70,130,180)
+          background-color: rgb(252,252,252)
+          color: rgb(70,130,180)
+          line-height: 0.65rem
+          font-size: 0.65rem
+          font-weight: bolder
+          text-transform: uppercase
+          cursor: pointer
+          user-select: none
+
+        button#message-send:hover
+          background-color: rgb(70,130,180)
+          color: rgb(252,252,252)
+
+        button#message-send:disabled
+          border: 1px solid rgb(153,153,153)
+          background-color: rgb(252,252,252)
+          color: rgb(153,153,153)
+          cursor: default
+
+        span#message-error
+          display: inline-block
+          width: auto
+          height: auto
+          position: absolute
+          left: 0rem
+          top: -1.35rem
+          z-index: 10
+          padding: 0.25rem
+          margin: 0rem
+          box-sizing: border-box
+          background-color: rgba(225,225,225,0.75)
+          font-size: 0.85rem
+          line-height: 0.85rem
+          color: rgb(178,34,34)
+          user-select: none
+
+      div#message-list-empty
+        justify-content: center
+        align-items: center
+        align-content: center
+        color: rgb(240,240,240)
+        line-height: 3rem
+        font-size: 3rem
+        font-weight: bolder
+        user-select: none
