@@ -1,0 +1,268 @@
+template
+  require(from="./monster.css")
+
+  div.container
+    form#form.monster(submit.delegate="submitForm('form', 'commitMonsterChanges', '/monster/update')")
+      div.form-control
+        span#form-error.error.hidden We are having a server issue. Please try again later
+        input.control(type="submit" value="Save")
+
+
+
+      div.row.double
+        div.column.left
+          div.form-group
+            div.title-row
+              label.title.primary(for="name") Name
+              span.error.hidden can only have letters, numbers, and spaces
+            input#name(type="text" name="name" value.one-way="state.monster.name" input.delegate="checkText({ id: 'name', type: 'input-text', keys: 'state.monster.name' })" focus.trigger="storeCurrentValue('name')")
+
+
+
+          div.form-group
+            label.title.primary(for="size") Size
+            select#size(name="size" value.one-way="state.monster.size" change.delegate="updateState({ id: 'size', type: 'select-text', keys: 'state.monster.size' })")
+              option(repeat.for="size of form.sizes" model.one-time="size" value.one-time="size") ${size | titleCase}
+
+
+
+          div.form-group
+            label.title.primary(for="alignment") Alignment
+            select#alignment(name="alignment" value.one-way="state.monster.alignment" change.delegate="updateState({ id: 'alignment', type: 'select-text', keys: 'state.monster.alignment' })")
+              option(repeat.for="alignment of form.alignments" model.one-time="alignment" value.one-time="alignment") ${alignment}
+
+
+
+          div.form-group
+            label.title.primary(for="types") Types (multiple)
+            select#types(name="types" value.one-way="state.monster.creatureTypeList" change.delegate="updateState({ id: 'types', type: 'select-multiple', keys: 'state.monster.creatureTypeList' })" multiple)
+              option(repeat.for="type of form.types" model.one-time="type" value.one-time="type") ${type | titleCase}
+
+
+
+        div.column.right
+          div.form-group
+            label.title.primary(for="image") Image URL
+            input#image(type="text" name="image" value.one-way="state.monster.image" change.delegate="updateState({ id: 'image', type: 'input-text', keys: 'state.monster.image' })")
+            div.item-image
+              div.image(css="opacity: ${(!state.monster.image) ? '0.5' : '1'}; background-size: ${(!state.monster.image) ? 'auto' : 'cover'}; background-image: url(${(!state.monster.image) ? 'image-icon.svg' : `${state.monster.image}`});")
+
+
+
+      div.row.single
+        div.column.solo
+          div.form-group
+            div.title-row
+              label.title.primary(for="challenge-rating") Challenge Rating
+              span.modifier (${state.monster.xpReward} experience points)
+            select#challenge-rating(name="challenge-rating" value.one-way="state.monster.challengeRating" change.delegate="updateState({ id: 'challenge-rating', type: 'select-number', keys: 'state.monster.challengeRating' })")
+              option(repeat.for="challengeRating of form.challengeRatings" model.one-time="challengeRating[0]" value.one-time="challengeRating[0]") ${(challengeRating[0] <= 0 || challengeRating[0] >= 1) ? challengeRating[1] : (challengeRating[0] === 0.125) ? "&frac18;" : (challengeRating[0] === 0.25) ? "&frac14;" : "&frac12;"}
+
+
+
+        div.column.solo
+          div.form-group
+            label.title.primary(for="hp-max") Hit Points
+            input#hp-max(type="number" name="hp-max" min="1" value.one-way="state.monster.hpMax" input.delegate="checkNumber({ id: 'hp-max', type: 'input-number', keys: 'state.monster.hpMax' })" focus.trigger="storeCurrentValue('hp-max')")
+
+
+
+        div.column.solo
+          div.form-group
+            label.title.primary(for="ac-value") Armor Class
+            input#ac-value(type="number" name="ac-value" min="1" value.one-way="state.monster.acValue" input.delegate="checkNumber({ id: 'ac-value', type: 'input-number', keys: 'state.monster.acValue' })" focus.trigger="storeCurrentValue('ac-value')")
+
+
+
+        div.column.solo
+          div.form-group
+            label.title.primary(for="ac-type") Armor Type
+            input#ac-shield.input-checkbox.hidden(type="checkbox" name="ac-shield" model.one-time="'shield'" checked.one-way="state.monster.acShield" change.delegate="updateState({ id: 'ac-shield', type: 'checkbox-boolean', keys: 'state.monster.acShield' })")
+            div.input-row
+              select#ac-type(name="ac-type" value.one-way="state.monster.acType" change.delegate="updateState({ id: 'ac-type', type: 'select-text', keys: 'state.monster.acType' })")
+                optgroup(repeat.for="group of form.acTypes" label.one-time="group[0]")
+                  option(repeat.for="acType of group[1]" model.one-time="acType[0]" value.one-time="acType[0]") ${acType[1]}
+              label#label-ac-shield.label-checkbox(for="ac-shield") with Shield
+
+
+
+        div.column.solo
+          div.form-group.before.w100
+            div.title-row
+              label.title.primary Speed
+              span.modifier (Initiative: ${state.monster.initiativeBonus})
+            input.input-checkbox.hidden(repeat.for="speed of form.speeds" id="speed-has-${speed[0]}" type="checkbox" name="speed-has-${speed[0]}" model.one-time="speed[0]" checked.one-way="state.monster.speedList.includes(speed[0])" change.delegate="showElem({ id: `speed-has-${speed[0]}`, type: 'checkbox-array', keys: 'state.monster.speedList', group: 'speed', statistic: speed[0] })")
+            div.checkbox-row
+              label.label-checkbox(repeat.for="speed of form.speeds" id="label-speed-has-${speed[0]}" for="speed-has-${speed[0]}") has ${speed[1] | titleCase} Speed
+
+
+
+        div.column.solo
+          div.form-group.after
+            div.repeat-group(repeat.for="speed of form.speeds" class="group-speed-${speed[0]} ${(state.monster.speedList.includes(speed[0]) ? '' : 'hidden')}")
+              label.title.secondary(for="speed-${speed[0]}") ${speed[1] | titleCase} Speed (ft)
+              input(id="speed-${speed[0]}" type="number" name="speed-${speed[0]}" min="0" step="5" value.one-way="state.monster[speed[0]]" input.delegate="checkNumber({ id: `speed-${speed[0]}`, type: 'input-number', keys: `state.monster.${speed[0]}` })" focus.trigger="storeCurrentValue(`speed-${speed[0]}`)")
+
+
+
+      div.row.double
+        div.column.left
+          div.form-group
+            label.title.primary Ability Scores
+            div.repeat-group(repeat.for="ability of form.abilities | slice:0")
+              div.title-row
+                label.title.secondary(for="ability-${ability[0]}") ${ability[1] | titleCase}
+                span.modifier (${(state.monster[ability[2]] < 0) ? '' : '+'}${state.monster[ability[2]]})
+              input(id="ability-${ability[0]}" type="number" name="ability-${ability[0]}" min="1" max="30" value.one-way="state.monster[ability[0]]" input.delegate="checkNumber({ id: `ability-${ability[0]}`, type: 'input-number', keys: `state.monster.${ability[0]}` })" focus.trigger="storeCurrentValue(`ability-${ability[0]}`)")
+
+
+
+        div.column.right
+          div.form-group
+            label.title.blank
+            div.repeat-group(repeat.for="ability of form.abilities | slice:3")
+              div.title-row
+                label.title.secondary(for="ability-${ability[0]}") ${ability[1] | titleCase}
+                span.modifier (${(state.monster[ability[2]] < 0) ? '' : '+'}${state.monster[ability[2]]})
+              input(id="ability-${ability[0]}" type="number" name="ability-${ability[0]}" min="1" max="30" value.one-way="state.monster[ability[0]]" input.delegate="checkNumber({ id: `ability-${ability[0]}`, type: 'input-number', keys: `state.monster.${ability[0]}` })" focus.trigger="storeCurrentValue(`ability-${ability[0]}`)")
+
+
+
+      div.row.double
+        div.column.left
+          div.form-group
+            label.title.primary Saving Throw Proficiencies
+            div.repeat-group(repeat.for="savingThrow of form.savingThrowProficiencies | slice:0")
+              input.input-checkbox.hidden(id="saving-throw-has-${savingThrow[0]}" type="checkbox" name="saving-throw-has-${savingThrow[0]}" model.one-time="savingThrow[0]" checked.one-way="state.monster.savingThrowList" change.delegate="showElem({ id: `saving-throw-has-${savingThrow[0]}`, type: 'checkbox-array', keys: 'state.monster.savingThrowList', group: 'saving-throw', statistic: savingThrow[0] })")
+              div.title-row
+                label.label-checkbox(id="label-saving-throw-has-${savingThrow[0]}" for="saving-throw-has-${savingThrow[0]}") has ${savingThrow[2] | titleCase} Saving Throw Proficiency
+                span.modifier(class="group-saving-throw-${savingThrow[0]} ${(state.monster.savingThrowList.includes(savingThrow[0]) ? '' : 'hidden')}") (${(state.monster[savingThrow[1]] < 0) ? '' : '+'}${state.monster[savingThrow[1]]})
+
+
+
+        div.column.right
+          div.form-group
+            label.title.blank
+            div.repeat-group(repeat.for="savingThrow of form.savingThrowProficiencies | slice:3")
+              input.input-checkbox.hidden(id="saving-throw-has-${savingThrow[0]}" type="checkbox" name="saving-throw-has-${savingThrow[0]}" model.one-time="savingThrow[0]" checked.one-way="state.monster.savingThrowList" change.delegate="showElem({ id: `saving-throw-has-${savingThrow[0]}`, type: 'checkbox-array', keys: 'state.monster.savingThrowList', group: 'saving-throw', statistic: savingThrow[0] })")
+              div.title-row
+                label.label-checkbox(id="label-saving-throw-has-${savingThrow[0]}" for="saving-throw-has-${savingThrow[0]}") has ${savingThrow[2] | titleCase} Saving Throw Proficiency
+                span.modifier(class="group-saving-throw-${savingThrow[0]} ${(state.monster.savingThrowList.includes(savingThrow[0]) ? '' : 'hidden')}") (${(state.monster[savingThrow[1]] < 0) ? '' : '+'}${state.monster[savingThrow[1]]})
+
+
+
+      div.row.double
+        div.column.left
+          div.form-group
+            label.title.primary Skills
+            div.repeat-group(repeat.for="skill of form.skills | slice:0")
+              input.input-radio.hidden(id="skill-has-${skill[0]}None" type="radio" name="skill-has-${skill[0]}" model.one-time="`${skill[0]}None`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}None`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              input.input-radio.hidden(id="skill-has-${skill[0]}Skilled" type="radio" name="skill-has-${skill[0]}" model.one-time="`${skill[0]}Skilled`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}Skilled`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              input.input-radio.hidden(id="skill-has-${skill[0]}Heightened" type="radio" name="skill-has-${skill[0]}Heightened" model.one-time="`${skill[0]}Heightened`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}Heightened`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              div.title-row
+                label.title.secondary ${skill[1]}
+                span.modifier(class="${(state.monster.skillList.includes(`${skill[0]}None`)) ? 'hidden' : ''}") (${(state.monster[skill[2]] < 0) ? '' : '+'}${state.monster[skill[2]]})
+              div.radios
+                label.label-radio(id="label-skill-has-${skill[0]}None" for="skill-has-${skill[0]}None") Unskilled
+                label.label-radio(id="label-skill-has-${skill[0]}Skilled" for="skill-has-${skill[0]}Skilled") Skilled
+                label.label-radio(id="label-skill-has-${skill[0]}Heightened" for="skill-has-${skill[0]}Heightened") Heightened
+
+
+
+        div.column.right
+          div.form-group
+            label.title.blank
+            div.repeat-group(repeat.for="skill of form.skills | slice:9")
+              input.input-radio.hidden(id="skill-has-${skill[0]}None" type="radio" name="skill-has-${skill[0]}" model.one-time="`${skill[0]}None`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}None`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              input.input-radio.hidden(id="skill-has-${skill[0]}Skilled" type="radio" name="skill-has-${skill[0]}" model.one-time="`${skill[0]}Skilled`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}Skilled`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              input.input-radio.hidden(id="skill-has-${skill[0]}Heightened" type="radio" name="skill-has-${skill[0]}Heightened" model.one-time="`${skill[0]}Heightened`" matcher.bind="radioMatcher" checked.one-way="state.monster.skillList" change.delegate="updateState({ id: `skill-has-${skill[0]}Heightened`, type: 'radio-array', keys: 'state.monster.skillList', statistic: skill[0] })")
+              div.title-row
+                label.title.secondary ${skill[1]}
+                span.modifier(class="${(state.monster.skillList.includes(`${skill[0]}None`)) ? 'hidden' : ''}") (${(state.monster[skill[2]] < 0) ? '' : '+'}${state.monster[skill[2]]})
+              div.radios
+                label.label-radio(id="label-skill-has-${skill[0]}None" for="skill-has-${skill[0]}None") Unskilled
+                label.label-radio(id="label-skill-has-${skill[0]}Skilled" for="skill-has-${skill[0]}Skilled") Skilled
+                label.label-radio(id="label-skill-has-${skill[0]}Heightened" for="skill-has-${skill[0]}Heightened") Heightened
+
+
+
+      div.row.triple
+        div.column.left
+          div.form-group
+            label.title.primary(for="vulnerabilities") Vulnerabilities (multiple)
+            select#vulnerabilities(name="vulnerabilities" value.one-way="state.monster.vulnerabilityList" change.delegate="updateState({ id: 'vulnerabilities', type: 'select-multiple', keys: 'state.monster.vulnerabilityList' })" multiple)
+              option(repeat.for="damage of form.damageTypes" model.one-time="damage[0]" value.one-time="damage[0]") ${damage[1]}
+
+
+
+        div.column.center
+          div.form-group
+            label.title.primary(for="resistances") Resistances (multiple)
+            select#resistances(name="resistances" value.one-way="state.monster.resistanceList" change.delegate="updateState({ id: 'resistances', type: 'select-multiple', keys: 'state.monster.resistanceList' })" multiple)
+              option(repeat.for="damage of form.damageTypes" model.one-time="damage[0]" value.one-time="damage[0]") ${damage[1]}
+
+
+
+        div.column.right
+          div.form-group
+            label.title.primary(for="immunities") Immunities (multiple)
+            select#immunities(name="immunities" value.one-way="state.monster.immunityList" change.delegate="updateState({ id: 'immunities', type: 'select-multiple', keys: 'state.monster.immunityList' })" multiple)
+              option(repeat.for="damage of form.damageTypes" model.one-time="damage[0]" value.one-time="damage[0]") ${damage[1]}
+
+
+
+      div.row.single
+        div.column.solo
+          div.form-group
+            div.title-row
+              label.title.primary Senses
+              span.modifier (Passive Perception: ${state.monster.passivePerception})
+            div.repeat-group(repeat.for="sense of form.senses")
+              input.input-checkbox.hidden(id="sense-has-${sense[0]}" type="checkbox" name="sense-has-${sense[0]}" model.one-time="sense[0]" checked.one-way="state.monster.senseList" change.delegate="showElem({ id: `sense-has-${sense[0]}`, type: 'checkbox-array', keys: 'state.monster.senseList', group: 'sense', statistic: sense[0] })")
+              div.title-row
+                label.label-checkbox(id="label-sense-has-${sense[0]}" for="sense-has-${sense[0]}") has ${sense[1]} (ft)
+              input(id="sense-${sense[0]}" type="number" name="sense-${sense[0]}" class="group-sense-${sense[0]} ${(state.monster.senseList.includes(sense[0]) ? '' : 'hidden')}" min="0" step="5" value.one-way="state.monster[sense[0]]" input.delegate="checkNumber({ id: `sense-${sense[0]}`, type: 'input-number', keys: `state.monster.${sense[0]}` })" focus.trigger="storeCurrentValue(`sense-${sense[0]}`)")
+
+
+
+        div.column.solo
+          div.form-group
+            label.title.primary(for="language-proficiencies") Language Proficiencies (multiple)
+            select#language-proficiencies(name="language-proficiencies" value.two-way="state.monster.languageProficiencyList" change.delegate="updateState({ id: 'language-proficiencies', type: 'select-multiple', keys: 'state.monster.languageProficiencyList' })" multiple)
+              optgroup(repeat.for="group of form.languageProficiencies" label.one-time="group[0]")
+                option(repeat.for="language of group[1]" model.one-time="language[0]" value.one-time="language[0]") ${language[1]}
+
+
+
+      div.row.single
+        div.column.solo
+          div.form-group
+            div.title-row
+              label.title.primary Special Traits
+              button.add(click.delegate="addTextarea({ statistic: 'specialTraitList' })") Add Trait
+              button.sample(click.delegate="addSamples({ statistic: 'specialTraitList', form: 'specialTraitSamples' })") Samples
+            div.repeat-group(repeat.for="trait of state.monster.specialTraitList")
+              textarea.trait(id="special-trait-${$index}" value.one-way="trait" input.delegate="checkTextarea({ id: `special-trait-${$index}`, index: $index, type: 'textarea-array', keys: 'state.monster.specialTraitList' })" focus.trigger="storeCurrentValue(`special-trait-${$index}`)")
+              div.title-row
+                span.error.hidden(id="error-special-trait-${$index}") Semicolons not allowed
+                button.remove(click.delegate="removeTextarea({ statistic: 'specialTraitList', index: $index })") Remove Trait
+
+
+
+        div.column.solo
+          div.form-group
+            div.title-row
+              label.title.primary Actions
+              button.add(click.delegate="addTextarea({ statistic: 'actionList' })") Add Action
+              button.sample(click.delegate="addSamples({ statistic: 'actionList', form: 'actionSamples' })") Samples
+            div.add-statistic
+              label.title.secondary(for="add-statistic-action") Click on textarea &gt; Select a statistic &gt; Statistic will be added at cursor's last position
+              select#add-statistic-action(name="add-statistic-action" value.one-way="storage.lastStatistic" change.delegate="insertStatistic('add-statistic-action')")
+                option(model.one-time="''" value.one-time="''") Add statistic
+                optgroup(repeat.for="group of form.statistics" label.one-time="group[0]")
+                  option(repeat.for="statistic of group[1]" model.one-time="statistic[0]" value.one-time="statistic[0]") ${statistic[1]}
+            div.repeat-group(repeat.for="action of state.monster.actionList")
+              textarea.action(id="action-${$index}" value.one-way="action" input.delegate="checkTextarea({ id: `action-${$index}`, index: $index, type: 'textarea-array', keys: 'state.monster.actionList' })" focus.trigger="storeCurrentValue(`action-${$index}`)" blur.trigger="blurTextarea({ id: `action-${$index}` })")
+              div.title-row
+                span.error.hidden(id="error-action-${$index}") Semicolons not allowed
+                button.remove(click.delegate="removeTextarea({ statistic: 'actionList', index: $index })") Remove Action
