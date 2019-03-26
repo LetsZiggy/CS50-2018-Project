@@ -1,0 +1,9 @@
+template(bindable="router, state")
+  require(from="./nav-header.css")
+
+  header#nav-header
+    div.group.left
+      img(src="logo.svg" alt="D20 Red Dice")
+      span D20
+    div.group.right(if.bind="router.currentInstruction.config.route !== 'entrance'")
+      a(repeat.for="route of router.navigation" href.bind="(route.title === 'Lobby') ? route.href + '/' + state.username : route.href") ${(route.title === "Entrance") ? "log-out" : route.title}

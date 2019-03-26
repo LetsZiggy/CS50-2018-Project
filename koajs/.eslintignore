@@ -1,0 +1,6 @@
+**/*
+!controllers/**/*
+!models/**/*
+!routes/**/*
+!services/**/*
+!spec/**/*

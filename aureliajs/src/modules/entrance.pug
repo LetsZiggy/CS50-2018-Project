@@ -1,0 +1,69 @@
+template
+  require(from="./entrance.css")
+
+  div.container
+    div#server-error.hidden
+
+    div.main
+      input#show-register.hidden(type="radio" name="show-tabs")
+      input#show-signin.hidden(type="radio" name="show-tabs" checked)
+      input#show-reset.hidden(type="radio" name="show-tabs")
+
+      div.tabs
+        label#label-register(for="show-register" click.delegate="setCurrentTab('register')") Register
+        label#label-signin(for="show-signin" click.delegate="setCurrentTab('signin')") Sign-In
+        label#label-reset(for="show-reset" click.delegate="setCurrentTab('reset')") Reset Password
+
+      div.forms
+        form#register.form(submit.delegate="submitForm($event, 'register', '/entrance/register')")
+          div.form-group
+            label.title(for="register-username") Username
+            span.error
+            input#register-username.username(type="text" name="username" input.delegate="checkUsername('register')" required)
+          div.form-group
+            label.title(for="register-email") Email
+            span.error
+            input#register-email.email(type="email" name="email" input.delegate="checkEmail('register')" required)
+          div.form-group
+            label.title(for="register-password") Password
+            span.error
+            input#register-password.password(type="password" name="password" input.delegate="checkPassword('register')" required)
+          div.form-group
+            label.title(for="register-confirm") Confirm password
+            span.error
+            input#register-confirm.confirm(type="password" name="confirm" input.delegate="checkConfirm('register')" required)
+          input#register-submit.submit(type="submit" value="Register" disabled)
+
+
+
+        form#signin.form(submit.delegate="submitForm($event, 'signin', '/entrance/signin')")
+          div.form-group
+            label.title(for="signin-username") Username
+            span.error
+            input#signin-username.username(type="text" name="username" input.delegate="checkUsername('signin')" autofocus required)
+          div.form-group
+            label.title(for="signin-password") Password
+            span.error
+            input#signin-password.password(type="password" name="password" input.delegate="checkPassword('signin')" required)
+          input#signin-submit.submit(type="submit" value="Sign-In" disabled)
+
+
+
+        form#reset.form(submit.delegate="submitForm($event, 'reset', '/entrance/reset')")
+          div.form-group
+            label.title(for="reset-username") Username
+            span.error
+            input#reset-username.username(type="text" name="username" input.delegate="checkUsername('reset')" required)
+          div.form-group
+            label.title(for="reset-email") Email
+            span.error
+            input#reset-email.email(type="email" name="email" input.delegate="checkEmail('reset')" required)
+          div.form-group
+            label.title(for="reset-password") Password
+            span.error
+            input#reset-password.password(type="password" name="password" input.delegate="checkPassword('reset')" required)
+          div.form-group
+            label.title(for="reset-confirm") Confirm password
+            span.error
+            input#reset-confirm.confirm(type="password" name="confirm" input.delegate="checkConfirm('reset')" required)
+          input#reset-submit.submit(type="submit" value="Reset Password" disabled)
