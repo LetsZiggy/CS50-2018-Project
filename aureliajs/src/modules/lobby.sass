@@ -35,442 +35,263 @@ div.container
     align-content: center
     box-shadow: 0rem 2.5rem 5rem -1rem rgb(153,153,153)
 
-    input#show-tables:checked ~ div.tabs label#label-tables,
-    input#show-characters:checked ~ div.tabs label#label-characters,
-    input#show-monsters:checked ~ div.tabs label#label-monsters
-      border-bottom: none
-      background-color: rgb(252,252,252)
-      cursor: default
-
-    input#show-tables:checked ~ div.lists div#tables-window,
-    input#show-characters:checked ~ div.lists div#characters-window,
-    input#show-monsters:checked ~ div.lists div#monsters-window
-      display: flex
-
-    div.tabs
-      display: flex
-      width: 100%
-      height: 2.5rem
-      flex-flow: row nowrap
-      justify-content: space-between
-      align-items: center
-      align-content: center
-      box-sizing: border-box
-      background-color: rgb(255,255,255)
-
-      label
-        display: flex
-        width: calc((100% / 3) - 1px)
-        height: 100%
-        flex-flow: row nowrap
-        justify-content: center
-        align-items: center
-        align-content: center
-        margin: 0rem
-        padding: 0.25rem
-        box-sizing: border-box
-        border-bottom: 2px solid rgb(204,204,204)
-        background-color: rgb(222,222,222)
-        font-size: 1.25rem
-        line-height: 1.25rem
-        cursor: pointer
-        user-select: none
-
-    div.lists
+    div#rooms-window
       display: flex
       width: 100%
       height: 100%
-      flex-flow: row nowrap
+      flex-flow: column nowrap
+      justify-content: flex-start
+      align-items: flex-start
+      align-content: flex-start
+      margin: 0rem
+      padding: 1rem
+      box-sizing: border-box
+      background-color: rgb(252,252,252)
+      overflow-x: hidden
+      overflow-y: auto
+
+      input#hide-owner:checked ~ div.window-options div.main-options label#legend-owner,
+      input#hide-user:checked ~ div.window-options div.main-options label#legend-user,
+      input#hide-others:checked ~ div.window-options div.main-options label#legend-others
+        border: 1px solid rgba(178,34,34,0.15)
+        opacity: 0.25
+
+        span.title
+          color: rgb(178,34,34)
+
+      input#hide-owner:checked ~ div.window-options div.main-options label#legend-owner:hover,
+      input#hide-user:checked ~ div.window-options div.main-options label#legend-user:hover,
+      input#hide-others:checked ~ div.window-options div.main-options label#legend-others:hover
+        border: 1px solid rgba(70,130,180,1)
+        opacity: 1
+
+        span.title
+          color: rgb(70,130,180)
+
+      input#hide-owner:checked ~ div.list div.type-owner,
+      input#hide-user:checked ~ div.list div.type-user,
+      input#hide-others:checked ~ div.list div.type-others
+        display: none
+
+      div.window-options
+        display: flex
+        width: 100%
+        height: 1.5rem
+        flex-flow: row nowrap
+        justify-content: flex-start
+        align-items: center
+        align-content: center
+        box-sizing: border-box
+        margin: 0rem 0rem 0.5rem 0rem
+        padding: 0rem
+
+        div.main-options
+          display: inline-flex
+          width: auto
+          height: 100%
+          flex-grow: 1
+          flex-flow: row nowrap
+          justify-content: flex-start
+          align-items: center
+          align-content: center
+
+          label.options-rooms
+            display: inline-flex
+            width: auto
+            height: 100%
+            flex-flow: row nowrap
+            justify-content: flex-start
+            align-items: center
+            align-content: center
+            margin: 0rem 0.25rem
+            padding: 0rem 0.25rem
+            opacity: 1
+            box-sizing: border-box
+            border-radius: 3px
+            border: 1px solid rgba(70,130,180,0.15)
+            cursor: pointer
+            user-select: none
+
+            span.title
+              width: auto
+              height: 100%
+              margin: 0rem
+              padding: 0rem
+              color: rgb(0,0,0)
+
+            span.legend-colour
+              width: 1rem
+              height: 1rem
+              margin: 0rem 0.25rem 0rem 0rem
+              padding: 0rem
+              box-sizing: border-box
+              border-radius: 100%
+
+          label.options-rooms:hover
+            border: 1px solid rgba(178,34,34,1)
+
+            span.title
+              color: rgb(178,34,34)
+
+        button.create
+          width: auto
+          height: 1.5rem
+          margin: 0rem 0rem 0rem auto
+          padding: 0rem 0.25rem
+          box-sizing: border-box
+          border-radius: 3px
+          border: 1px solid rgb(70,130,180)
+          background-color: rgb(252,252,252)
+          color: rgb(70,130,180)
+          line-height: 1.5rem
+          font-size: 0.75rem
+          font-weight: bolder
+          text-transform: uppercase
+          cursor: pointer
+          user-select: none
+
+        button.create:hover
+          border: 1px solid rgb(70,130,180)
+          background-color: rgb(70,130,180)
+          color: rgb(252,252,252)
+
+    div.list-empty
+      display: flex
+      width: 100%
+      height: calc(100% - 1.5rem)
+      flex-flow: column nowrap
       justify-content: center
       align-items: center
+      align-content: center
+      color: rgb(240,240,240)
+      line-height: 3rem
+      font-size: 3rem
+      font-weight: bolder
+      user-select: none
+
+    div.list
+      display: flex
+      width: 100%
+      height: calc(100% - 1.5rem)
+      flex-flow: column nowrap
+      justify-content: flex-start
+      align-items: flex-start
       align-content: center
       margin: 0rem
       padding: 0rem
       box-sizing: border-box
-      background-color: rgb(252,252,252)
 
-      div#tables-window,
-      div#characters-window,
-      div#monsters-window
-        display: none
-        width: 100%
-        height: 100%
-        flex-flow: column nowrap
-        justify-content: flex-start
-        align-items: flex-start
-        align-content: flex-start
-        margin: 0rem
-        padding: 1rem
-        box-sizing: border-box
-        overflow-x: hidden
-        overflow-y: auto
-
-        input#hide-dm:checked ~ div.window-options div.main-options label#legend-dm,
-        input#hide-player:checked ~ div.window-options div.main-options label#legend-player,
-        input#hide-others:checked ~ div.window-options div.main-options label#legend-others
-          border: 1px solid rgba(178,34,34,0.15)
-          opacity: 0.25
-
-          span.title
-            color: rgb(178,34,34)
-
-        input#hide-dm:checked ~ div.window-options div.main-options label#legend-dm:hover,
-        input#hide-player:checked ~ div.window-options div.main-options label#legend-player:hover,
-        input#hide-others:checked ~ div.window-options div.main-options label#legend-others:hover
-          border: 1px solid rgba(70,130,180,1)
-          opacity: 1
-
-          span.title
-            color: rgb(70,130,180)
-
-        input#hide-dm:checked ~ div.list div.type-dm,
-        input#hide-player:checked ~ div.list div.type-player,
-        input#hide-others:checked ~ div.list div.type-others
-          display: none
-
-        // Lists inputs' css
-
-        div.window-options
-          display: flex
-          width: 100%
-          height: 1.5rem
-          flex-flow: row nowrap
-          justify-content: flex-start
-          align-items: center
-          align-content: center
-          box-sizing: border-box
-          margin: 0rem 0rem 0.5rem 0rem
-          padding: 0rem
-
-          div.main-options
-            display: inline-flex
-            width: auto
-            height: 100%
-            flex-grow: 1
-            flex-flow: row nowrap
-            justify-content: flex-start
-            align-items: center
-            align-content: center
-
-            label.options-tables
-              display: inline-flex
-              width: auto
-              height: 100%
-              flex-flow: row nowrap
-              justify-content: flex-start
-              align-items: center
-              align-content: center
-              margin: 0rem 0.25rem
-              padding: 0rem 0.25rem
-              opacity: 1
-              box-sizing: border-box
-              border-radius: 3px
-              border: 1px solid rgba(70,130,180,0.15)
-              cursor: pointer
-              user-select: none
-
-              span.title
-                width: auto
-                height: 100%
-                margin: 0rem
-                padding: 0rem
-                color: rgb(0,0,0)
-
-              span.legend-colour
-                width: 1rem
-                height: 1rem
-                margin: 0rem 0.25rem 0rem 0rem
-                padding: 0rem
-                box-sizing: border-box
-                border-radius: 100%
-
-            label.options-tables:hover
-              border: 1px solid rgba(178,34,34,1)
-
-              span.title
-                color: rgb(178,34,34)
-
-            // label.options-characters
-
-            label.options-monsters
-              display: inline-flex
-              width: auto
-              height: 100%
-              flex-flow: row nowrap
-              justify-content: flex-start
-              align-items: center
-              align-content: center
-              margin: 0rem 0.25rem
-              padding: 0rem 0.25rem
-              box-sizing: border-box
-              cursor: pointer
-              user-select: none
-
-              span.title
-                width: auto
-                height: 100%
-                margin: 0rem 0.25rem 0rem 0rem
-                padding: 0rem
-                color: rgb(0,0,0)
-
-              select
-                width: 5rem
-                height: 100%
-                margin: 0rem
-                padding: 0.15rem 0.25rem
-                box-sizing: border-box
-                border: 1px solid rgba(70,130,180,0.15)
-                background: rgb(252,252,252) url("select-arrow.svg") no-repeat scroll right center
-                color: rgb(0,0,0)
-                line-height: 0.85rem
-                font-size: 0.85rem
-                cursor: pointer
-                appearance: none
-
-              select:hover
-                border: 1px solid rgba(70,130,180,1)
-
-          button.create
-            width: auto
-            height: 1.5rem
-            margin: 0rem 0rem 0rem auto
-            padding: 0rem 0.25rem
-            box-sizing: border-box
-            border-radius: 3px
-            border: 1px solid rgb(70,130,180)
-            background-color: rgb(252,252,252)
-            color: rgb(70,130,180)
-            line-height: 1.5rem
-            font-size: 0.75rem
-            font-weight: bolder
-            text-transform: uppercase
-            cursor: pointer
-            user-select: none
-
-          button.create:hover
-            border: 1px solid rgb(70,130,180)
-            background-color: rgb(70,130,180)
-            color: rgb(252,252,252)
-
-      div.list-empty
+      div.room-item
         display: flex
         width: 100%
-        height: calc(100% - 1.5rem)
-        flex-flow: column nowrap
-        justify-content: center
+        height: 3rem
+        flex-flow: row nowrap
+        justify-content: flex-start
         align-items: center
         align-content: center
-        color: rgb(240,240,240)
-        line-height: 3rem
-        font-size: 3rem
-        font-weight: bolder
-        user-select: none
-
-      div.list
-        display: flex
-        width: 100%
-        height: calc(100% - 1.5rem)
-        flex-flow: column nowrap
-        justify-content: flex-start
-        align-items: flex-start
-        align-content: center
-        margin: 0rem
+        margin: 0.5rem 0rem
         padding: 0rem
         box-sizing: border-box
+        border-radius: 50px 0% 0% 50px
+        background-color: rgb(252,252,252)
 
-        div.table-item,
-        div.character-item,
-        div.monster-item
+        div.item-legend
+          width: 0.5rem
+          height: 100%
+          box-sizing: border-box
+
+        div.item-info
           display: flex
-          width: 100%
+          width: auto
           height: 3rem
+          flex-grow: 1
           flex-flow: row nowrap
           justify-content: flex-start
           align-items: center
           align-content: center
-          margin: 0.5rem 0rem
-          padding: 0rem
+          margin: 0rem
+          padding: 0rem 1rem
           box-sizing: border-box
-          border-radius: 50px 0% 0% 50px
-          background-color: rgb(252,252,252)
 
-          div.item-legend
-            width: 0.5rem
-            height: 100%
-            box-sizing: border-box
-
-          div.item-image
-            width: 3rem
-            height: 100%
-            position: relative
-            box-sizing: border-box
-            border-radius: 100%
-            border: 1px solid rgb(225,225,225)
-            overflow: none
-
-            div.image
-              width: 100%
-              height: 100%
-              box-sizing: border-box
-              border-radius: 100%
-              background-color: rgb(252,252,252)
-              background-position: center
-              background-repeat: no-repeat
-              background-clip: border-box
-              background-attachment: scroll
-
-          div.item-info
-            display: flex
+          span.item-name
             width: auto
-            height: 3rem
+            height: auto
             flex-grow: 1
-            flex-flow: row nowrap
-            justify-content: flex-start
-            align-items: center
-            align-content: center
-            margin: 0rem
-            padding: 0rem 1rem
-            box-sizing: border-box
-
-            span.item-name
-              width: auto
-              height: auto
-              flex-grow: 1
-              line-height: 1.25rem
-              font-size: 1.25rem
-              user-select: none
-
-              span.item-join-error
-                margin: 0rem 0rem 0rem 0.5rem
-                padding: 0rem
-                line-height: 0.75rem
-                font-size: 0.75rem
-                text-transform: uppercase
-                color: rgb(178,34,34)
-                user-select: none
-
-              span.item-name-small
-                margin: 0rem 0rem 0rem 0.5rem
-                padding: 0rem
-                line-height: 0.75rem
-                font-size: 0.75rem
-                user-select: none
-
-            input.item-passcode
-              width: 10rem
-              height: auto
-              padding: 0.5rem
-              margin: 0rem 0rem 0.5rem 0rem
-              border: none
-              border-bottom: 1px solid rgb(153,153,153)
-              background-color: rgb(252,252,252)
-              color: rgb(0,0,0)
-              line-height: 1rem
-              font-size: 1rem
-
-            input.item-passcode:focus
-              border-bottom: 1px solid rgb(70,130,180)
-
-          button.item-enter,
-          button.delete,
-          button.cancel,
-          button.join-create,
-          button.confirm-selection
-            width: 5rem
-            height: 100%
-            padding: 0rem
-            margin: 0rem
-            border: none
-            box-sizing: border-box
-            border-radius: 3px
-            line-height: 1.5rem
-            font-size: 0.75rem
-            font-weight: bolder
-            text-transform: uppercase
-            cursor: pointer
+            line-height: 1.25rem
+            font-size: 1.25rem
             user-select: none
 
-          button.item-enter,
-          button.join-create,
-          button.confirm-selection
-            border: 1px solid rgb(70,130,180)
-            background-color: rgb(252,252,252)
-            color: rgb(70,130,180)
-
-          button.delete,
-          button.cancel
-            margin-right: 0.5rem
-            border: 1px solid rgb(178,34,34)
-            background-color: rgb(252,252,252)
-            color: rgb(178,34,34)
-
-          button.join-create
-            line-height: 0.75rem
-            font-size: 0.65rem
-
-          button.item-enter:hover,
-          button.join-create:hover,
-          button.confirm-selection:hover
-            border: 1px solid rgb(70,130,180)
-            background-color: rgb(70,130,180)
-            color: rgb(252,252,252)
-
-          button.delete:hover,
-          button.cancel:hover
-            border: 1px solid rgb(178,34,34)
-            background-color: rgb(178,34,34)
-            color: rgb(252,252,252)
-
-          button.confirm-selection:disabled,
-          button.confirm-selection:hover:disabled
-            border: 1px solid rgb(153,153,153)
-            background-color: rgb(252,252,252)
-            color: rgb(153,153,153)
-            cursor: default
-
-          div.join-selection
-            display: flex
-            width: auto
-            height: 3rem
-            flex-grow: 1
-            flex-flow: row nowrap
-            justify-content: flex-start
-            align-items: center
-            align-content: center
-            margin: 0rem
-            padding: 0rem 1rem
-            box-sizing: border-box
-
-            span.join-selection-title
-              width: auto
-              height: auto
-              flex-grow: 1
-              line-height: 1.25rem
-              font-size: 1.25rem
+            span.item-join-error
+              margin: 0rem 0rem 0rem 0.5rem
+              padding: 0rem
+              line-height: 0.75rem
+              font-size: 0.75rem
+              text-transform: uppercase
+              color: rgb(178,34,34)
               user-select: none
 
-            select.join-selection-select
-              width: 10rem
-              height: 2rem
-              padding: 0rem 0.25rem
-              margin: 0.5rem 0rem
-              box-sizing: border-box
-              border: 1px solid rgba(70,130,180,0.15)
-              background: rgb(252,252,252) url("select-arrow.svg") no-repeat scroll right center
-              color: rgb(0,0,0)
-              line-height: 0.85rem
-              font-size: 0.85rem
-              cursor: pointer
-              appearance: none
+            span.item-name-small
+              margin: 0rem 0rem 0rem 0.5rem
+              padding: 0rem
+              line-height: 0.75rem
+              font-size: 0.75rem
+              user-select: none
 
-            select.join-selection-select:hover
-              border: 1px solid rgba(70,130,180,1)
+          input.item-passcode
+            width: 10rem
+            height: auto
+            padding: 0.5rem
+            margin: 0rem 0rem 0.5rem 0rem
+            border: none
+            border-bottom: 1px solid rgb(153,153,153)
+            background-color: rgb(252,252,252)
+            color: rgb(0,0,0)
+            line-height: 1rem
+            font-size: 1rem
 
-        div.table-item:hover,
-        div.character-item:hover,
-        div.monster-item:hover
-          background-color: rgb(247,247,247)
+          input.item-passcode:focus
+            border-bottom: 1px solid rgb(70,130,180)
 
-          div.item-info
-            input.item-passcode
-              background-color: rgb(247,247,247)
+        button.item-enter,
+        button.delete
+          width: 5rem
+          height: 100%
+          padding: 0rem
+          margin: 0rem
+          border: none
+          box-sizing: border-box
+          border-radius: 3px
+          line-height: 1.5rem
+          font-size: 0.75rem
+          font-weight: bolder
+          text-transform: uppercase
+          cursor: pointer
+          user-select: none
+
+        button.item-enter
+          border: 1px solid rgb(70,130,180)
+          background-color: rgb(252,252,252)
+          color: rgb(70,130,180)
+
+        button.delete
+          margin-right: 0.5rem
+          border: 1px solid rgb(178,34,34)
+          background-color: rgb(252,252,252)
+          color: rgb(178,34,34)
+
+        button.item-enter:hover
+          border: 1px solid rgb(70,130,180)
+          background-color: rgb(70,130,180)
+          color: rgb(252,252,252)
+
+        button.delete:hover
+          border: 1px solid rgb(178,34,34)
+          background-color: rgb(178,34,34)
+          color: rgb(252,252,252)
+
+      div.room-item:hover
+        background-color: rgb(247,247,247)
+
+        div.item-info
+          input.item-passcode
+            background-color: rgb(247,247,247)

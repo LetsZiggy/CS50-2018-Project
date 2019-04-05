@@ -1,0 +1,26 @@
+<template>
+  require(from="./macro-modal.css")
+
+  div.background
+    div#form.form
+      div.form-group.main-title
+        span.title Macro
+      
+      div.form-group
+        label.title(for="input-title") Title
+          span.modal-error.hidden &nbsp;required
+        input#input-title.text-input(type="text" name="input-title" input.delegate="checkInput()")
+      
+      div.form-group
+        label.title(for="input-description") Description
+          span.modal-error.hidden &nbsp;or Calculation required
+        textarea#input-description.textarea-input(name="input-description" input.delegate="checkInput()")
+      
+      div.form-group
+        label.title(for="input-calculation") Calculation
+          span.modal-error.hidden &nbsp;or Description required
+        input#input-calculation.text-input(type="text" name="input-calculation" placeholder="[+2d6] [+4] [-1d4] [-2]" input.delegate="checkInput()")
+      
+      div.form-button-group
+        button.button.cancel(type="button" click.delegate="toggleModal()") Cancel
+        button#modal-submit.button.create(type="button" click.delegate="submitForm($event)" disabled) Create

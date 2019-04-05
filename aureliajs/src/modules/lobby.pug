@@ -8,87 +8,32 @@ template
       span Please try again later
 
     div.lobby
-      input#show-tables.hidden(type="radio" name="show-tabs" model.one-time="'show-tables'" checked.one-way="state.currentLobby")
-      input#show-characters.hidden(type="radio" name="show-tabs" model.one-time="'show-characters'" checked.one-way="state.currentLobby")
-      input#show-monsters.hidden(type="radio" name="show-tabs" model.one-time="'show-monsters'" checked.one-way="state.currentLobby")
-
-      div.tabs
-        label#label-tables(for="show-tables" click.delegate="setCurrentTab('tables')" ) Tables
-        label#label-characters(for="show-characters" click.delegate="setCurrentTab('characters')" ) Characters
-        label#label-monsters(for="show-monsters" click.delegate="setCurrentTab('monsters')" ) Monsters
-
-      div.lists
-        div#tables-window
-          input#hide-dm.hidden(type="checkbox" model.one-time="'hide-dm'" checked.one-way="state.filterTables")
-          input#hide-player.hidden(type="checkbox" model.one-time="'hide-player'" checked.one-way="state.filterTables")
-          input#hide-others.hidden(type="checkbox" model.one-time="'hide-others'" checked.one-way="state.filterTables")
-          div.window-options
-            div.main-options
-              label#legend-dm.options-tables(for="hide-dm" click.delegate="filterTables('dm')")
-                span.legend-colour.blue
-                span.title DM
-              label#legend-player.options-tables(for="hide-player" click.delegate="filterTables('player')")
-                span.legend-colour.green
-                span.title Player
-              label#legend-others.options-tables(for="hide-others" click.delegate="filterTables('others')")
-                span.legend-colour.yellow
-                span.title Seats available
-            button.create(click.delegate="createTable()") Create table
-          div.list-empty(if.one-way="!state.tablesList.length") No tables available
-          div.list(else)
-            div.table-item(repeat.for="table of state.tablesList" if.one-way="((table.owner === state.username) || (table.players.includes(state.username)) || (table.players.length < table.maxPlayers))" id="table-${table.id}" class="${(table.owner === state.username) ? 'type-dm' : (table.players.includes(state.username)) ? 'type-player' : 'type-others'}")
-              div.item-legend(class="${(table.owner === state.username) ? 'blue' : (table.players.includes(state.username)) ? 'green' : 'yellow'}")
-              div.item-info
-                span.item-name ${table.name}
-                  span.item-join-error.hidden(id="join-error-${$index}") requires the correct passcode
-                  span.item-name-small(if.one-way="table.owner !== state.username") is DM-ed by ${table.owner}
-                  span.item-name-small(if.one-way="table.published === 0") is not yet published
-                input.item-passcode(if.one-way="(table.passcode.length) && (table.owner !== state.username) && (!table.players.includes(state.username))" id="passcode-${$index}" type="text" name="passcode" placeholder="Passcode")
-              button.delete(if.one-way="(table.owner === state.username)" click.delegate="delete({ route: 'table', id: table.id, index: $index })") Delete
-              button.item-enter(if.one-way="((table.owner === state.username) || (table.players.includes(state.username)))" click.delegate="route({ route: 'table', id: table.id, index: $index })") ${(table.owner === state.username) ? "Run" : "Play"}
-              button.item-enter(if.one-way="((table.owner !== state.username) && (!table.players.includes(state.username)))" click.delegate="showSelection({ id: table.id, set: 'select' })") Join
-              div.join-selection.hidden(if.one-way="((table.owner !== state.username) && (!table.players.includes(state.username)))")
-                span.join-selection-title(if.one-way="!state.charactersList.length") Create a character first
-                span.join-selection-title(else) Play table with ...
-                select#join-selection.join-selection-select(if.one-way="state.charactersList.length" name="join-selection" change.delegate="enableConfirm(table.id)")
-                  option(value="" selected) Select character
-                  option(repeat.for="character of state.charactersList" value="${character.id}") ${character.name}
-              button.cancel.hidden(if.one-way="((table.owner !== state.username) && (!table.players.includes(state.username)))" click.delegate="showSelection({ id: table.id, set: 'info' })") Cancel
-              button.join-create.hidden(if.one-way="((table.owner !== state.username) && (!table.players.includes(state.username)) && !state.charactersList.length)" click.delegate="createCharacter()") Create character
-              button.confirm-selection.hidden(if.one-way="((table.owner !== state.username) && (!table.players.includes(state.username)) && state.charactersList.length)" click.delegate="route({ route: 'table', id: table.id, index: $index })" disabled) Confirm
-
-
-
-        div#characters-window
-          div.window-options
-            button.create(click.delegate="createCharacter()") Create character
-          div.list-empty(if.one-way="!state.charactersList.length") No characters available
-          div.list(else)
-            div.character-item(repeat.for="character of state.charactersList" id="character-${character.id}")
-              div.item-image
-                div.image(css="opacity: ${(!character.image) ? '0.5' : '1'}; background-size: ${(!character.image) ? 'auto' : 'cover'}; background-image: url(${(!character.image) ? 'image-icon.svg' : `${character.image}`});")
-              div.item-info
-                span.item-name ${character.name}
-              button.delete(click.delegate="delete({ route: 'character', id: character.id, index: $index })") Delete
-              button.item-enter(click.delegate="route({ route: 'character', id: character.id, index: $index })") Edit
-
-
-
-        div#monsters-window
-          div.window-options
-            div.main-options
-              label.options-monsters
-                span.title Challenge Rating:
-                select#filter-monsters(name="filter-monsters" value.one-way="state.filterMonsters" change.delegate="filterMonsters('filter-monsters')")
-                  option(repeat.for="challengeRating of options.challengeRatings" model.one-time="challengeRating[0]" value.one-time="challengeRating[0]" selected.one-way="(challengeRating[0] === state.filterMonsters) ? true : false") ${(challengeRating[0] <= 0 || challengeRating[0] >= 1) ? challengeRating[1] : (challengeRating[0] === 0.125) ? "&frac18;" : (challengeRating[0] === 0.25) ? "&frac14;" : "&frac12;"}
-            button.create(click.delegate="createMonster()") Create monster
-          div.list-empty(if.one-way="!state.monstersList.length") No monsters available
-          div.list(else)
-            div.monster-item(repeat.for="monster of state.monstersList" id="monster-${monster.id}" data-challenge-rating="${monster.challengeRating}")
-              div.item-image
-                div.image(css="opacity: ${(!monster.image) ? '0.5' : '1'}; background-size: ${(!monster.image) ? 'auto' : 'cover'}; background-image: url(${(!monster.image) ? 'image-icon.svg' : `${monster.image}`});")
-              div.item-info
-                span.item-name ${monster.name}
-                  span.item-name-small at CR ${(monster.challengeRating <= 0 || monster.challengeRating >= 1) ? monster.challengeRating : (monster.challengeRating === 0.125) ? "&frac18;" : (monster.challengeRating === 0.25) ? "&frac14;" : "&frac12;"}
-              button.delete(click.delegate="delete({ route: 'monster', id: monster.id, index: $index })") Delete
-              button.item-enter(click.delegate="route({ route: 'monster', id: monster.id, index: $index })") Edit
+      div#rooms-window
+        input#hide-owner.hidden(type="checkbox" model.one-time="'hide-owner'" checked.one-way="state.filterRooms")
+        input#hide-user.hidden(type="checkbox" model.one-time="'hide-user'" checked.one-way="state.filterRooms")
+        input#hide-others.hidden(type="checkbox" model.one-time="'hide-others'" checked.one-way="state.filterRooms")
+        div.window-options
+          div.main-options
+            label#legend-owner.options-rooms(for="hide-owner" click.delegate="updateFilterRooms('owner')")
+              span.legend-colour.blue
+              span.title Owner
+            label#legend-user.options-rooms(for="hide-user" click.delegate="updateFilterRooms('user')")
+              span.legend-colour.green
+              span.title User
+            label#legend-others.options-rooms(for="hide-others" click.delegate="updateFilterRooms('others')")
+              span.legend-colour.yellow
+              span.title Seats available
+          button.create(click.delegate="createRoom()") Create room
+        div.list-empty(if.one-way="!state.roomsList.length") No rooms available
+        div.list(else)
+          div.room-item(repeat.for="room of state.roomsList" if.one-way="((room.owner === state.username) || (room.users.includes(state.username)) || (room.users.length < room.maxUsers))" id="room-${room.id}" class="${(room.owner === state.username) ? 'type-owner' : (room.users.includes(state.username)) ? 'type-user' : 'type-others'}")
+            div.item-legend(class="${(room.owner === state.username) ? 'blue' : (room.users.includes(state.username)) ? 'green' : 'yellow'}")
+            div.item-info
+              span.item-name ${room.name}
+                span.item-join-error.hidden(id="join-error-${$index}") requires the correct passcode
+                span.item-name-small(if.one-way="room.owner !== state.username") is run by ${room.owner}
+                span.item-name-small(if.one-way="room.visible === 0") is not yet made visible
+              input.item-passcode(if.one-way="(room.passcode.length) && (room.owner !== state.username) && (!room.users.includes(state.username))" id="passcode-${$index}" type="text" name="passcode" placeholder="Passcode" change.delegate="enableJoinButton($index)")
+            button.delete(if.one-way="(room.owner === state.username)" click.delegate="delete({ route: 'room', id: room.id, index: $index })") Delete
+            button.item-enter(if.one-way="((room.owner === state.username) || (room.users.includes(state.username)))" click.delegate="route({ route: 'room', id: room.id, index: $index })") ${(room.owner === state.username) ? "Run" : "Play"}
+            button.item-enter(if.one-way="((room.owner !== state.username) && (!room.users.includes(state.username)))" id="join-${$index}" click.delegate="route({ route: 'room', id: room.id, index: $index })") Join

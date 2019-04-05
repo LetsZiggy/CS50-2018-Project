@@ -40,28 +40,12 @@ export class App {
         href: `#/lobby`,
       },
       {
-        route: `table/:assetid`,
-        name: `table`,
-        moduleId: `./modules/table`,
-        title: `Table`,
+        route: `room/:assetid`,
+        name: `room`,
+        moduleId: `./modules/room`,
+        title: `Room`,
         nav: false,
-        href: `#/table`,
-      },
-      {
-        route: `character/:assetid`,
-        name: `character`,
-        moduleId: `./modules/character`,
-        title: `Character`,
-        nav: false,
-        href: `#/character`,
-      },
-      {
-        route: `monster/:assetid`,
-        name: `monster`,
-        moduleId: `./modules/monster`,
-        title: `Monster`,
-        nav: false,
-        href: `#/monster`,
+        href: `#/room`,
       },
     ])
 

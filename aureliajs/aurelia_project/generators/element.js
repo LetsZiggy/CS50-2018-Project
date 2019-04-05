@@ -37,20 +37,19 @@ export class ${className} {
 
   }
 }
-
 `
   }
 
   generatePUGSource (className) {
     return `template
   h1 \${value}
-
 `
   }
 
 //   generateHTMLSource (className) {
 //     return `<template>
 //   <h1>\${value}</h1>
-// </template>`
+// </template>
+// `
 //   }
 }

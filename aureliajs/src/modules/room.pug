@@ -1,0 +1,144 @@
+template
+  require(from="./room.css")
+
+  div.container
+    div.room
+      span#form-error.form-error.hidden We are having a server issue. Please try again later
+      div.owner(if.one-way="state.room.owner === state.username" css="display: ${(state.room.owner === state.username) ? 'flex' : 'none'};")
+        input#show-owner-macros.hidden(type="radio" name="owner-tabs" checked)
+        input#show-owner-room.hidden(type="radio" name="owner-tabs")
+        input#show-owner-users.hidden(type="radio" name="owner-tabs")
+
+
+
+        div#owner-menu
+          div.name ${state.room.name}
+          label#label-owner-macros.tab-label(for="show-owner-macros" click.delegate="setCurrentTab('owner-macros')") Macros
+          label#label-owner-room.tab-label(for="show-owner-room" click.delegate="setCurrentTab('owner-room')") Room Settings
+          label#label-owner-users.tab-label(for="show-owner-users" click.delegate="setCurrentTab('owner-users')") Room Users
+
+
+
+        div#owner-main
+          div#owner-macros
+            div.form-control
+              button.create-macro(click.delegate="showModal()") Create Macro
+            div.macro-empty(if.bind="!state.room.macros.length") No Macros
+            div.row.triple(else repeat.for="row of storage.macros")
+              div.column(repeat.for="macro of row" class="${($index === 0) ? 'left' : ($index === 1) ? 'center' : 'right'}")
+                div.form-group
+                  div.titl ${macro.titl}
+                  div.desc(if.bind="macro.desc.length")
+                    div.line(repeat.for="line of macro.desc") ${line}
+                  div.calc(if.bind="macro.calc.length") ${macro.calc}
+                  button.send(click.delegate="commitMessage({ macro: macro, isMacro: true })") Send
+                  button.macro-delete(click.delegate="deleteMacro(macro)") Delete
+
+
+
+          form#owner-room(submit.delegate="updateRoomData()")
+            div.form-control
+              label.cancel(for="show-owner-macros") Cancel
+              input.control(type="submit" value="Save")
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  div.title-row
+                    label.title.primary(for="room-name-input") Name
+                    span.error.hidden can only have letters, numbers, and spaces
+                  input#room-name-input(type="text" name="room-name-input" value.one-way="storage.room.name" input.delegate="checkText({ id: 'room-name-input', type: 'input-text', keys: 'storage.room.name', localStorage: true })" focus.trigger="storeCurrentValue('room-name-input')")
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  div.title-row
+                    label.title.primary(for="room-passcode-input") Passcode
+                    span.error.hidden can only have letters, numbers, and spaces
+                  input#room-passcode-input(type="text" name="room-passcode-input" value.one-way="storage.room.passcode" input.delegate="checkText({ id: 'room-passcode-input', type: 'input-text', keys: 'storage.room.passcode', localStorage: true })" focus.trigger="storeCurrentValue('room-passcode-input')")
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  div.title-row
+                    label.title.primary(for="room-max-users-input") Maximum Users (2 - 12)
+                  input#room-max-users-input(type="number" name="room-max-users-input" min="2" max="12" value.one-way="storage.room.maxUsers" input.delegate="checkNumber({ id: 'room-max-users-input', type: 'input-number', keys: 'storage.room.maxUsers', localStorage: true })" focus.trigger="storeCurrentValue('room-max-users-input')")
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  input#room-visible-input.hidden(type="checkbox" name="room-visible-input" checked.one-way="storage.room.visible" change.delegate="updateState({ id: 'room-visible-input', type: 'checkbox-boolean', keys: 'storage.room.visible', localStorage: true })")
+                  label.label-checkbox(for="room-visible-input") Make room visible:
+
+
+
+          div#owner-users
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  div.title-row
+                    label.title.primary(for="users-tab-select-remove") Remove User
+                  div.input-row
+                    select#users-tab-select-remove(name="users-tab-select-remove" change.delegate="enableButton('users-tab-select-remove')")
+                      option(value="" selected) Select a user
+                      option(repeat.for="user of state.room.users" value="${$index}") ${user}
+                    button.remove(click.delegate="roomAddRemoveUsers({ elemID: 'users-tab-select-remove' })" disabled) Remove
+
+
+
+      div.user(if.one-way="state.room.owner !== state.username" css="display: ${(state.room.owner !== state.username) ? 'flex' : 'none'};")
+        input#show-user-macros.hidden(type="radio" name="user-tabs" checked)
+        input#show-user-resign.hidden(type="radio" name="user-tabs")
+
+
+
+        div#user-menu
+          div.name ${state.room.name}
+          label#label-user-macros.tab-label(for="show-user-macros" click.delegate="setCurrentTab('user-macros')") Macros
+          label#label-user-resign.tab-label(for="show-user-resign" click.delegate="setCurrentTab('user-resign')") Resign
+
+
+
+        div#user-main
+          div#user-macros
+            div.form-control
+              button.create-macro(click.delegate="showModal()") Create Macro
+            div.macro-empty(if.bind="!state.room.macros.length") No Macros
+            div.row.triple(else repeat.for="row of storage.macros")
+              div.column(repeat.for="macro of row" class="${($index === 0) ? 'left' : ($index === 1) ? 'center' : 'right'}")
+                div.form-group
+                  div.titl ${macro.titl}
+                  div.desc(if.bind="macro.desc.length")
+                    div.line(repeat.for="line of macro.desc") ${line}
+                  div.calc(if.bind="macro.calc.length") ${macro.calc}
+                  button.send(click.delegate="commitMessage({ macro: macro, isMacro: true })") Send
+                  button.macro-delete(click.delegate="deleteMacro(macro)") Delete
+
+
+
+          div#user-resign
+            div.row.single
+              div.column.solo
+                div.form-group.w75
+                  div.title-row
+                    label.title.primary(for="user-self-resign") Resign from this room
+                  div.input-row
+                    select#user-self-resign(name="user-self-resign" change.delegate="enableButton('user-self-resign')")
+                      option(value="" selected) No, I'm sticking with this group
+                      option(value="${state.username}") Yes, I'd like to resign!
+                    button.resign(click.delegate="roomAddRemoveUsers({ elemID: 'user-self-resign' })" disabled) Resign
+
+
+
+      div.messages
+        div#message-list-empty(if.one-way="!state.room.messages.length") No Messages
+
+        div#message-list-group(if.one-way="state.room.messages.length")
+          div.message(repeat.for="message of state.room.messages")
+            div.sender ${message.owner}:
+            div.title(if.bind="message.title.length") ${message.title}
+            div.line(repeat.for="line of message.text") ${line}
+
+        div#message-input-group
+          textarea#message-input(name="message-input" placeholder="Message or\n\n::calc-start::\n[+2d6] [+4] [-1d4] [-2]\n::calc-end::" value.one-way="storage.room.message" input.delegate="checkTextarea({ id: 'message-input', index: $index, type: 'textarea-text', keys: 'storage.room.message', error: 'message-error' })" focus.trigger="storeCurrentValue('message-input')" blur.trigger="blurTextarea({ id: 'message-input' })")
+          button#message-calc(click.delegate="insertText('message-input')") Calc
+          button#message-send(click.delegate="commitMessage({ textarea: 'message-input', button: 'message-send' })" disabled) Send
+          span#message-error.hidden Semicolons not allowed
+
+    macro-modal(class="${(!storage.showModal) ? 'hidden' : ''}" show-modal.call="showModal()" prepare-macros.call="prepareMacros()" macros.two-way="storage.macros")

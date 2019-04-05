@@ -2,7 +2,7 @@
  * Module dependencies
  */
 
-const Model = require('../models/tables')
+const Model = require('../models/rooms')
 const { wsActions } = require('../app-services')
 
 
@@ -48,9 +48,9 @@ const Ctrl = {
         payload: result,
       }
 
-      ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
+      ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
       ctx.cookies.set(`assetid`, result.payload.id, ctx.state.cookies.client)
-      // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
+      // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
       // ctx.cookies.set(`assetid`, result.payload.id, ctx.state.cookies.clientHttps)
     }
     else if (result.error === `wrong credentials`) {
@@ -91,18 +91,18 @@ const Ctrl = {
     result = {
       success: true,
       payload: {
-        tablesList: result,
+        roomsList: result,
       },
     }
 
-    ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-    ctx.cookies.set(`assetid`, ctx.request.body.id, ctx.state.cookies.client)
-    // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-    // ctx.cookies.set(`assetid`, ctx.request.body.id, ctx.state.cookies.clientHttps)
+    ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
+    ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
+    // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
+    // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
 
     ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
     // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
- 
+
     ctx.body = result
   },
   getAll: async (ctx, next) => {
@@ -115,43 +115,13 @@ const Ctrl = {
     result = {
       success: true,
       payload: {
-        tablesList: result,
+        roomsList: result,
       },
     }
 
     ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
     // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
- 
-    ctx.body = result
-  },
-  getCurrentTableData: async (ctx, next) => {
-    let result = await Model.getCurrentTableData(ctx, next)
 
-    if (!result) {
-      result = {
-        characters: [],
-        monsters: [],
-        messages: [],
-      }
-    }
-
-    result = {
-      success: true,
-      payload: {
-        characters: result.characters,
-        monsters: result.monsters,
-        messages: result.messages,
-      },
-    }
-
-    ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-    ctx.cookies.set(`assetid`, ctx.request.body.tableID, ctx.state.cookies.client)
-    // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-    // ctx.cookies.set(`assetid`, ctx.request.body.tableID, ctx.state.cookies.clientHttps)
-
-    ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
-    // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
- 
     ctx.body = result
   },
   delete: async (ctx, next) => {
@@ -170,15 +140,53 @@ const Ctrl = {
       }
     }
 
-    wsActions.tableDelete({ id: ctx.request.body.assetid })
+    wsActions.roomDelete({ room: ctx.request.body.assetid })
 
     ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
     // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
 
     ctx.body = result
   },
-  updateTablesListMonsters: async (ctx, next) => {
-    let result = await Model.updateTablesListMonsters(ctx, next)
+  getRoomMacros: async (ctx, next) => {
+    let result = await Model.getRoomMacros(ctx, next)
+
+    if (result.error) {
+      result = []
+    }
+
+    result = {
+      success: true,
+      payload: {
+        macros: result,
+      },
+    }
+
+    ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
+    // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
+
+    ctx.body = result
+  },
+  getRoomMessages: async (ctx, next) => {
+    let result = await Model.getRoomMessages(ctx, next)
+
+    if (result.error) {
+      result = []
+    }
+
+    result = {
+      success: true,
+      payload: {
+        messages: result,
+      },
+    }
+
+    ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
+    // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
+
+    ctx.body = result
+  },
+  updateRoomUsers: async (ctx, next) => {
+    let result = await Model.updateRoomUsers(ctx, next)
 
     if (result.id) {
       result = {
@@ -187,26 +195,24 @@ const Ctrl = {
       }
 
       if (ctx.request.body.hasOwnProperty(`websocketType`)) {
-        if (ctx.request.body.websocketType === `monsterAdd`) {
-          wsActions.monsterAdd({
-            table: ctx.request.body.assetid,
-            monstersIDs: ctx.request.body.monstersIDs,
-            monstersList: ctx.request.body.monstersList,
-            monstersData: ctx.request.body.monstersData,
+        if (ctx.request.body.websocketType === `userAdd`) {
+          wsActions.userAdd({
+            room: ctx.request.body.assetid,
+            users: ctx.request.body.users,
           })
         }
 
-        if (ctx.request.body.websocketType === `monsterRemove`) {
-          wsActions.monsterRemove({
-            table: ctx.request.body.assetid,
-            monsterID: ctx.request.body.monsterID,
+        if (ctx.request.body.websocketType === `userRemove`) {
+          wsActions.userRemove({
+            room: ctx.request.body.assetid,
+            user: ctx.request.body.user,
           })
         }
       }
 
-      ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
+      ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
       ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
-      // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
+      // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
       // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
     }
     else if (result.error === `wrong credentials`) {
@@ -227,8 +233,8 @@ const Ctrl = {
 
     ctx.body = result
   },
-  updateTablesListCharacters: async (ctx, next) => {
-    let result = await Model.updateTablesListCharacters(ctx, next)
+  updateRoomData: async (ctx, next) => {
+    let result = await Model.updateRoomData(ctx, next)
 
     if (result.id) {
       result = {
@@ -236,71 +242,19 @@ const Ctrl = {
         payload: result,
       }
 
-      if (ctx.request.body.hasOwnProperty(`websocketType`)) {
-        if (ctx.request.body.websocketType === `characterAdd`) {
-          wsActions.characterAdd({
-            table: ctx.request.body.assetid,
-            players: ctx.request.body.players,
-            charactersIDs: ctx.request.body.charactersIDs,
-            charactersList: ctx.request.body.charactersList,
-            charactersData: ctx.request.body.charactersData,
-          })
-        }
-
-        if (ctx.request.body.websocketType === `characterRemove`) {
-          wsActions.characterRemove({
-            table: ctx.request.body.assetid,
-            player: ctx.request.body.player,
-            characterID: ctx.request.body.characterID,
-          })
-        }
-      }
-
-      ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-      ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
-      // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-      // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
-    }
-    else if (result.error === `wrong credentials`) {
-      result = {
-        success: false,
-        payload: result.error,
-      }
-    }
-    else {
-      result = {
-        success: false,
-        payload: `server error`,
-      }
-    }
-
-    ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
-    // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
-
-    ctx.body = result
-  },
-  updateTableData: async (ctx, next) => {
-    let result = await Model.updateTableData(ctx, next)
-
-    if (result.id) {
-      result = {
-        success: true,
-        payload: result,
-      }
-
-      wsActions.tableUpdate({
+      wsActions.roomUpdate({
         username: ctx.request.body.username,
-        table: ctx.request.body.table,
+        room: ctx.request.body.assetid,
         name: ctx.request.body.name,
         passcode: ctx.request.body.passcode,
-        maxPlayers: ctx.request.body.maxPlayers,
-        published: ctx.request.body.published,
+        maxUsers: ctx.request.body.maxUsers,
+        visible: ctx.request.body.visible,
       })
 
-      ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-      ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.client)
-      // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-      // ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.clientHttps)
+      ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
+      ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
+      // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
+      // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
     }
     else if (result.error === `wrong credentials`) {
       result = {
@@ -320,37 +274,13 @@ const Ctrl = {
 
     ctx.body = result
   },
-  updateCharacterInfo: async (ctx, next) => {
-    let result = await Model.updateCharacterInfo(ctx, next)
+  createRoomMacros: async (ctx, next) => {
+    let result = await Model.createRoomMacros(ctx, next)
 
     if (result.id) {
       result = {
         success: true,
         payload: result,
-      }
-
-      wsActions.characterUpdate({
-        table: ctx.request.body.table,
-        id: ctx.request.body.character,
-        $xp: ctx.request.body.xp,
-        $xpNextLevel: ctx.request.body.xpNextLevel,
-        coinCopper: ctx.request.body.coinCopper,
-        coinSilver: ctx.request.body.coinSilver,
-        coinElectrum: ctx.request.body.coinElectrum,
-        coinGold: ctx.request.body.coinGold,
-        coinPlatinum: ctx.request.body.coinPlatinum,
-        notes: ctx.request.body.notes,
-      })
-
-      ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-      ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.client)
-      // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-      // ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.clientHttps)
-    }
-    else if (result.error === `wrong credentials`) {
-      result = {
-        success: false,
-        payload: result.error,
       }
     }
     else {
@@ -359,6 +289,37 @@ const Ctrl = {
         payload: `server error`,
       }
     }
+
+    ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
+    ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
+    // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
+    // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
+
+    ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
+    // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
+
+    ctx.body = result
+  },
+  removeRoomMacros: async (ctx, next) => {
+    let result = await Model.removeRoomMacros(ctx, next)
+
+    if (result.stmt.changes === 1) {
+      result = {
+        success: true,
+        payload: result,
+      }
+    }
+    else {
+      result = {
+        success: false,
+        payload: `server error`,
+      }
+    }
+
+    ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
+    ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
+    // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
+    // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
 
     ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
     // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)
@@ -375,13 +336,11 @@ const Ctrl = {
       }
 
       wsActions.commitMessage({
-        table: ctx.request.body.table,
-        username: ctx.request.body.username,
-        senderID: ctx.request.body.senderID,
-        senderName: ctx.request.body.senderName,
-        type: ctx.request.body.type,
+        room: ctx.request.body.assetid,
+        owner: ctx.request.body.owner,
+        utc: ctx.request.body.utc,
+        title: ctx.request.body.title,
         text: ctx.request.body.text,
-        action: ctx.request.body.action,
       })
     }
     else {
@@ -391,10 +350,10 @@ const Ctrl = {
       }
     }
 
-    ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.client)
-    ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.client)
-    // ctx.cookies.set(`assettype`, `table`, ctx.state.cookies.clientHttps)
-    // ctx.cookies.set(`assetid`, ctx.request.body.table, ctx.state.cookies.clientHttps)
+    ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.client)
+    ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.client)
+    // ctx.cookies.set(`assettype`, `room`, ctx.state.cookies.clientHttps)
+    // ctx.cookies.set(`assetid`, ctx.request.body.assetid, ctx.state.cookies.clientHttps)
 
     ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpire)
     // ctx.cookies.set(`token`, ``, ctx.state.cookies.serverExpireHttps)

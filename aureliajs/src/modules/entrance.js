@@ -38,7 +38,7 @@ export class Entrance {
 
     // Clear cookie and state
     if (this.state.username) {
-      const result = await this.http.post(`/entrance/signout`, { username: this.state.username })
+      await this.http.post(`/entrance/signout`, { username: this.state.username })
       this.store.dispatch(`resetState`)
     }
   }
@@ -46,10 +46,6 @@ export class Entrance {
   attached () {
     // Firefox autofocus issue
     setTimeout(() => document.getElementById(`signin-username`).focus(), 200)
-
-    /* TEMP */
-    this.setData(`signin`)
-    /* TEMP */
   }
 
   unbind () {
@@ -58,44 +54,16 @@ export class Entrance {
     this.store.unregisterAction(`setUsername`, Actions.setUsername)
   }
 
-  /* TEMP */
-  setData (formID) {
-    setTimeout(() => {
-      if (document.getElementById(`${formID}-username`)) {
-        document.getElementById(`${formID}-username`).value = `abcd`
-      }
-
-      if (document.getElementById(`${formID}-email`)) {
-        document.getElementById(`${formID}-email`).value = `1@2.3`
-      }
-
-      if (document.getElementById(`${formID}-password`)) {
-        document.getElementById(`${formID}-password`).value = `123abcABC;`
-      }
-
-      if (document.getElementById(`${formID}-confirm`)) {
-        document.getElementById(`${formID}-confirm`).value = `123abcABC;`
-      }
-
-      this.checkSubmitButton(formID)
-    }, 100)
-  }
-  /* TEMP */
-
   setCurrentTab (formID) {
     document.getElementById(formID).reset()
     setTimeout(() => document.getElementById(`${formID}-username`).focus(), 200)
-
-    /* TEMP */
-    this.setData(formID)
-    /* TEMP */
 
     return true
   }
 
   // Enable submit button when no errors and empty inputs
   checkSubmitButton (formID) {
-    let toDisable = false
+    let isDisabled = false
     const form = document.getElementById(formID)
     const submit = document.getElementById(`${formID}-submit`)
     const inputs = form.getElementsByTagName(`input`)
@@ -103,17 +71,17 @@ export class Entrance {
 
     Array.from(inputs).forEach((input) => {
       if (input.value.length === 0 && input.type !== `hidden`) {
-        toDisable = true
+        isDisabled = true
       }
     })
 
     Array.from(errors).forEach((error) => {
       if (error.innerText) {
-        toDisable = true
+        isDisabled = true
       }
     })
 
-    submit.disabled = (toDisable) ? true : false
+    submit.disabled = isDisabled
   }
 
   // Check username input field
@@ -192,7 +160,7 @@ export class Entrance {
       else if (input.value.length !== 0 && !/^(?=.*[0-9])/.test(input.value)) {
         error.innerText = `needs to have at least one number`
       }
-      else if (input.value.length !== 0 && !/^(?=.*[!@#\$%\^&\*;])/.test(input.value)) {
+      else if (input.value.length !== 0 && !/^(?=.*[!@#$%^&*;])/.test(input.value)) {
         error.innerText = `needs to have at least one of these symbols: ! @ # $ % ^ & * ;`
       }
       else if (input.value.length === 0) {
