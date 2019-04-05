@@ -1,9 +1,7 @@
 import { nextStateHistory } from 'aurelia-store'
 
 import { initialState } from './state'
-import { tableBooleanKeys, tableArrayKeys, tableJSONKeys, tableNumberKeys } from './modules/table-form'
-import { characterBooleanKeys, characterArrayKeys, characterJSONKeys, characterNumberKeys } from './modules/character-form'
-import { monsterBooleanKeys, monsterArrayKeys, monsterJSONKeys, monsterNumberKeys } from './modules/monster-form'
+import { roomBooleanKeys, roomArrayKeys, roomNumberKeys } from './modules/room-form'
 
 // https://aurelia.io/docs/plugins/store#making-our-app-history-aware
 // https://github.com/zewa666/aurelia-store-examples/blob/master/markdown/src/actions.ts
@@ -21,68 +19,43 @@ export const Actions = {
       username: data.username,
     }))
   },
-  setCurrentLobby: (state, data = { currentLobby: `` }) => {
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        currentLobby: data.currentLobby,
-      },
-    }))
-  },
-  setFilterTables: (state, data = { filterTables: [] }) => {
-    const value = data.filterTables
-    const index = state.present.lobby.filterTables.indexOf(value)
-    data.filterTables = state.present.lobby.filterTables
+  setFilterRooms: (state, data = { filterRooms: [] }) => {
+    const value = data.filterRooms
+    const index = state.present.lobby.filterRooms.indexOf(value)
+    data.filterRooms = state.present.lobby.filterRooms
 
     if (index === -1) {
-      data.filterTables.push(value)
+      data.filterRooms.push(value)
     }
     else {
-      data.filterTables.splice(index, 1)
+      data.filterRooms.splice(index, 1)
     }
 
     return nextStateHistory(state, Object.assign({}, state.present, {
       lobby: {
         ...state.present.lobby,
-        filterTables: data.filterTables,
+        filterRooms: data.filterRooms,
       },
     }))
   },
-  setFilterMonsters: (state, data = { filterMonsters: -1 }) => {
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        filterMonsters: data.filterMonsters,
-      },
-    }))
-  },
-  appendTablesList: (state, data = { tablesList: [] }) => {
-    data.tablesList.forEach((value) => {
+  appendRoomsList: (state, data = { roomsList: [] }) => {
+    data.roomsList.forEach((value) => {
       // Convert number to boolean
-      tableBooleanKeys.forEach((key) => {
+      roomBooleanKeys.forEach((key) => {
         value[key] = (typeof value[key] === `number` && value[key] === 1)
           ? true
           : false
       })
 
       // Split string to array
-      tableArrayKeys.forEach((key) => {
+      roomArrayKeys.forEach((key) => {
         value[key] = (typeof value[key] === `string` && value[key].length)
           ? value[key].split(`;`)
           : []
       })
 
-      // Split JSON string to Javascript object
-      tableJSONKeys.forEach((key) => {
-        value[key[0]] = (typeof value[key[0]] === `string` && value[key[0]].length)
-          ? JSON.parse(value[key[0]])
-          : (key[1] === `array`)
-            ? []
-            : {}
-      })
-
       // Convert string to number
-      tableNumberKeys.forEach((key) => {
+      roomNumberKeys.forEach((key) => {
         value[key] = (typeof value[key] === `string`)
           ? Number(value[key])
           : (Array.isArray(value[key]))
@@ -91,15 +64,15 @@ export const Actions = {
       })
     })
 
-    data.tablesList = [...data.tablesList, ...state.present.lobby.tablesList]
+    data.roomsList = [...data.roomsList, ...state.present.lobby.roomsList]
 
-    // List unique tableIDs
-    const ids = data.tablesList
+    // List unique roomIDs
+    const ids = data.roomsList
       .map((value) => value.id)
       .filter((value, index, array) => array.indexOf(value) === index)
 
-    // List unique tableItems
-    data.tablesList = data.tablesList
+    // List unique roomItems
+    data.roomsList = data.roomsList
       .reduce((acc, value) => {
         const index = ids.indexOf(value.id)
 
@@ -115,72 +88,119 @@ export const Actions = {
     return nextStateHistory(state, Object.assign({}, state.present, {
       lobby: {
         ...state.present.lobby,
-        tablesList: data.tablesList,
+        roomsList: data.roomsList,
       },
     }))
   },
-  appendCharactersList: (state, data = { charactersList: [] }) => {
-    data.charactersList.forEach((value) => {
-      // Convert number to boolean
-      characterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
+  updateRoomsListUsers: (state, data = { index: null, users: [] }) => {
+    data.roomsList = [...state.present.lobby.roomsList]
+    data.roomsList[data.index] = {
+      ...data.roomsList[data.index],
+      users: data.users,
+    }
 
-      // Split string to array
-      characterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      lobby: {
+        ...state.present.lobby,
+        roomsList: data.roomsList,
+      },
+    }))
+  },
+  updateRoomUsers: (state, data = { users: [] }) => {
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      room: {
+        ...state.present.room,
+        ...data,
+      },
+    }))
+  },
+  updateRoomsListData: (state, data = { index: null, name: `Room Name`, passcode: ``, maxUsers: 4, visible: false }) => {
+    data.roomsList = [...state.present.lobby.roomsList]
+    data.roomsList[data.index] = {
+      ...data.roomsList[data.index],
+      name: data.name,
+      visible: data.visible,
+      passcode: data.passcode,
+      maxUsers: data.maxUsers,
+    }
 
-      // Split JSON string to Javascript object
-      characterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      lobby: {
+        ...state.present.lobby,
+        roomsList: data.roomsList,
+      },
+    }))
+  },
+  updateRoomData: (state, data = { name: `Room Name`, passcode: ``, maxUsers: 4, visible: false }) => {
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      room: {
+        ...state.present.room,
+        ...data,
+      },
+    }))
+  },
+  updateRoomMacros: (state, data = { isCreate: false, macro: {}, macros: [] }) => {
+    if (data.macros && Array.isArray(data.macros)) {
+      data.macros = [ ...state.present.room.macros, ...data.macros ]
+
+      // List unique macroIDs
+      const ids = data.macros
+        .map((value) => value.id)
+        .filter((value, index, array) => array.indexOf(value) === index)
+
+      // List unique macros
+      data.macros = data.macros
+        .reduce((acc, value) => {
+          const index = ids.indexOf(value.id)
+
+          if (index !== -1) {
+            acc.push(value)
+            ids.splice(index, 1)
           }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
+
+          return acc
+        }, [])
+    }
+    else if (data.isCreate) {
+      data.macros = [ ...state.present.room.macros, data.macro ]
+    }
+    else {
+      data.macros = state.present.room.macros
+        .filter((value) => value.id !== data.macro.id)
+    }
+
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      room: {
+        ...state.present.room,
+        macros: data.macros,
+      },
+    }))
+  },
+  setRoomData: (state, data = { default: {}, index: null, value: {} }) => {
+    if (!data.hasOwnProperty(`value`)) {
+      data.value = Object.assign({}, data.default, {
+        ...state.present.lobby.roomsList[data.index],
       })
+    }
 
-      // Convert string to number
-      characterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    data.charactersList = [...data.charactersList, ...state.present.lobby.charactersList]
-
-    // List unique characterIDs
-    const ids = data.charactersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-
-    // List unique characterItems
-    data.charactersList = data.charactersList
-      .reduce((acc, value) => {
-        const index = ids.indexOf(value.id)
-
-        if (index !== -1) {
+    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
+    return nextStateHistory(state, Object.assign({}, state.present, {
+      room: {
+        ...state.present.room,
+        ...data.value,
+      },
+    }))
+  },
+  deleteRoom: (state, data = { index: null, id: null }) => {
+    data.roomsList = state.present.lobby.roomsList
+      .reduce((acc, value, index) => {
+        if (index !== data.index && value.id !== data.id) {
           acc.push(value)
-          ids.splice(index, 1)
         }
 
         return acc
@@ -190,643 +210,30 @@ export const Actions = {
     return nextStateHistory(state, Object.assign({}, state.present, {
       lobby: {
         ...state.present.lobby,
-        charactersList: data.charactersList,
+        roomsList: data.roomsList,
       },
     }))
   },
-  appendMonstersList: (state, data = { monstersList: [] }) => {
-    data.monstersList.forEach((value) => {
-      // Convert number to boolean
-      monsterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
-
-      // Split string to array
-      monsterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
-
-      // Split JSON string to Javascript object
-      monsterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
-          }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
-      })
-
-      // Convert string to number
-      monsterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    data.monstersList = [...data.monstersList, ...state.present.lobby.monstersList]
-
-    // List unique monsterIDs
-    const ids = data.monstersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-
-    // List unique monsterItems
-    data.monstersList = data.monstersList
-      .reduce((acc, value) => {
-        const index = ids.indexOf(value.id)
-
-        if (index !== -1) {
-          acc.push(value)
-          ids.splice(index, 1)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        monstersList: data.monstersList,
-      },
-    }))
-  },
-  updateTableAssets: (state, data = { charactersIDs: [], charactersList: [], monstersIDs: [], monstersList: [], messages: [] }) => {
-    data.charactersList.forEach((value) => {
-      // Convert number to boolean
-      characterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
-
-      // Split string to array
-      characterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
-
-      // Split JSON string to Javascript object
-      characterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
-          }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
-      })
-
-      // Convert string to number
-      characterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    data.charactersList = [...data.charactersList, ...state.present.lobby.charactersList]
-
-    // List unique characterIDs
-    const charactersIDs = data.charactersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-      .filter((value) => data.charactersIDs.includes(value))
-
-    // List unique characterItems
-    data.charactersList = data.charactersList
-      .filter((value) => charactersIDs.includes(value.id))
-      .reduce((acc, value) => {
-        const index = charactersIDs.indexOf(value.id)
-
-        if (index !== -1) {
-          acc.push(value)
-          charactersIDs.splice(index, 1)
-        }
-
-        return acc
-      }, [])
-
-    data.monstersList.forEach((value) => {
-      // Convert number to boolean
-      monsterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
-
-      // Split string to array
-      monsterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
-
-      // Split JSON string to Javascript object
-      monsterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
-          }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
-      })
-
-      // Convert string to number
-      monsterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    data.monstersList = [...data.monstersList, ...state.present.lobby.monstersList]
-
-    // List unique monsterIDs
-    const monstersIDs = data.monstersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-      .filter((value) => data.monstersIDs.includes(value))
-
-    // List unique monsterItems
-    data.monstersList = data.monstersList
-      .filter((value) => monstersIDs.includes(value.id))
-      .reduce((acc, value) => {
-        const index = monstersIDs.indexOf(value.id)
-
-        if (index !== -1) {
-          acc.push(value)
-          monstersIDs.splice(index, 1)
-        }
-
-        return acc
-      }, [])
-
-    // JSON.parse message text
-    data.messages.forEach((value) => {
+  updateRoomMessages: (state, data = { messages: [] }) => {
+    data.messages = data.messages.map((value) => {
       value.text = JSON.parse(value.text)
+      return value
     })
 
     // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
     return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        charactersList: [...data.charactersList],
-        monstersList: [...data.monstersList],
-        messages: [...data.messages],
-      },
-    }))
-  },
-  updateTableAssetsData: (state, data = { type: ``, payload: {} }) => {
-    data[`update`] = {}
-
-    if (data.type === `characterUpdate`) {
-      data.update[`charactersList`] = [...state.present.table.charactersList]
-
-      data.update.charactersList.forEach((value, index) => {
-        if (Number(value.id) === Number(data.payload.id)) {
-          data.update.charactersList[index] = {
-            ...value,
-            ...data.payload,
-          }
-        }
-      })
-    }
-
-    if (data.type === `monsterUpdate`) {
-      data.update[`monstersList`] = [...state.present.table.monstersList]
-
-      data.update.monstersList.forEach((value, index) => {
-        if (Number(value.id) === Number(data.payload.id)) {
-          data.update.monstersList[index] = {
-            ...value,
-            ...data.payload,
-          }
-        }
-      })
-    }
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        ...data.update
-      },
-    }))
-  },
-  updateTablesListMonsters: (state, data = { index: null, monstersIDs: [], monstersData: [] }) => {
-    data.tablesList = [...state.present.lobby.tablesList]
-
-    data.tablesList[data.index].monstersIDs = [...data.monstersIDs]
-    data.tablesList[data.index].monstersData = [...data.monstersData]
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        tablesList: data.tablesList,
-      },
-    }))
-  },
-  updateTableMonsters: (state, data = { monstersIDs: [], monstersList: [], monstersData: [] }) => {
-    data.monstersList.forEach((value) => {
-      // Convert number to boolean
-      monsterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
-
-      // Split string to array
-      monsterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
-
-      // Split JSON string to Javascript object
-      monsterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
-          }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
-      })
-
-      // Convert string to number
-      monsterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    // List unique monsterIDs
-    const ids = data.monstersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-
-    // List unique monsterItems
-    data.monstersList = data.monstersList
-      .reduce((acc, value) => {
-        const index = ids.indexOf(value.id)
-
-        if (index !== -1) {
-          acc.push(value)
-          ids.splice(index, 1)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
+      room: {
+        ...state.present.room,
         ...data,
       },
     }))
   },
-  updateTablesListCharacters: (state, data = { index: null, players: [], charactersIDs: [], charactersData: [] }) => {
-    data.tablesList = [...state.present.lobby.tablesList]
-
-    data.tablesList[data.index].players = [...data.players]
-    data.tablesList[data.index].charactersIDs = [...data.charactersIDs]
-    data.tablesList[data.index].charactersData = [...data.charactersData]
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        tablesList: data.tablesList,
-      },
-    }))
-  },
-  updateTableCharacters: (state, data = { players: [], charactersIDs: [], charactersList: [], charactersData: [] }) => {
-    data.charactersList.forEach((value) => {
-      // Convert number to boolean
-      characterBooleanKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `number` && value[key] === 1)
-          ? true
-          : false
-      })
-
-      // Split string to array
-      characterArrayKeys.forEach((key) => {
-        value[key] = (typeof value[key] === `string` && value[key].length)
-          ? value[key].split(`;`)
-          : []
-      })
-
-      // Split JSON string to Javascript object
-      characterJSONKeys.forEach((key) => {
-        value[key[0]] = value[key[0]].map((mapValue) => {
-          if (typeof mapValue === `string` && mapValue.length) {
-            if (key[1] === `string`) {
-              return (mapValue.replace(/<br\s\/>/g, `\n`))
-            }
-            else {
-              return (JSON.parse(mapValue))
-            }
-          }
-          else {
-            if (key[1] === `string`) {
-              return (``)
-            }
-            else if (key[1] === `array`) {
-              return ([])
-            }
-            else {
-              return ({})
-            }
-          }
-        })
-      })
-
-      // Convert string to number
-      characterNumberKeys.forEach((key) => {
-        value[key] = Number(value[key])
-      })
-    })
-
-    // List unique characterIDs
-    const ids = data.charactersList
-      .map((value) => value.id)
-      .filter((value, index, array) => array.indexOf(value) === index)
-
-    // List unique characterItems
-    data.charactersList = data.charactersList
-      .reduce((acc, value) => {
-        const index = ids.indexOf(value.id)
-
-        if (index !== -1) {
-          acc.push(value)
-          ids.splice(index, 1)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        ...data,
-      },
-    }))
-  },
-  // updateTablesListData: (state, data = { index: null, name: `Table Name`, passcode: ``, maxPlayers: 4, published: false }) => {
-  //   data.tablesList = [...state.present.lobby.tablesList]
-
-  //   data.tablesList[data.index].name = data.name
-  //   data.tablesList[data.index].passcode = data.passcode
-  //   data.tablesList[data.index].maxPlayers = data.maxPlayers
-  //   data.tablesList[data.index].published = data.published
-
-  //   // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-  //   return nextStateHistory(state, Object.assign({}, state.present, {
-  //     lobby: {
-  //       ...state.present.lobby,
-  //       tablesList: data.tablesList,
-  //     },
-  //   }))
-  // },
-  updateTableData: (state, data = { name: `Table Name`, passcode: ``, maxPlayers: 4, published: false }) => {
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        ...data,
-      },
-    }))
-  },
-  // updateCharactersListCharacter: (state, data = { index: null, coinCopper: 0, coinSilver: 0, coinElectrum: 0, coinGold: 0, coinPlatinum: 0, notes: `` }) => {
-  //   data.charactersList = [...state.present.lobby.charactersList]
-
-  //   data.charactersList[data.index].coinCopper = data.coinCopper
-  //   data.charactersList[data.index].coinSilver = data.coinSilver
-  //   data.charactersList[data.index].coinElectrum = data.coinElectrum
-  //   data.charactersList[data.index].coinGold = data.coinGold
-  //   data.charactersList[data.index].coinPlatinum = data.coinPlatinum
-  //   data.charactersList[data.index].notes = data.notes
-
-  //   // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-  //   return nextStateHistory(state, Object.assign({}, state.present, {
-  //     lobby: {
-  //       ...state.present.lobby,
-  //       charactersList: [...data.charactersList],
-  //     },
-  //   }))
-  // },
-  updateTableCharacter: (state, data = { index: null, coinCopper: 0, coinSilver: 0, coinElectrum: 0, coinGold: 0, coinPlatinum: 0, notes: `` }) => {
-    data.charactersList = [...state.present.table.charactersList]
-
-    data.charactersList[data.index].coinCopper = data.coinCopper
-    data.charactersList[data.index].coinSilver = data.coinSilver
-    data.charactersList[data.index].coinElectrum = data.coinElectrum
-    data.charactersList[data.index].coinGold = data.coinGold
-    data.charactersList[data.index].coinPlatinum = data.coinPlatinum
-    data.charactersList[data.index].notes = data.notes
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        charactersList: [...data.charactersList],
-      },
-    }))
-  },
-  commitCharacterChanges: (state, data = { index: null, value: {} }) => {
-    data.list = [...state.present.lobby.charactersList]
-    data.list[data.index] = Object.assign({}, data.list[data.index], data.value)
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        charactersList: [...data.list],
-      },
-    }))
-  },
-  commitMonsterChanges: (state, data = { index: null, value: {} }) => {
-    data.list = [...state.present.lobby.monstersList]
-    data.list[data.index] = Object.assign({}, data.list[data.index], data.value)
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        monstersList: [...data.list],
-      },
-    }))
-  },
-  setTableData: (state, data = { default: {}, index: null, value: {} }) => {
-    if (!data.hasOwnProperty(`value`)) {
-      data.value = Object.assign({}, data.default, {
-        ...state.present.lobby.tablesList[data.index],
-      })
-    }
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        ...data.value,
-      },
-    }))
-  },
-  setCharacterData: (state, data = { default: {}, index: null, value: {} }) => {
-    if (!data.hasOwnProperty(`value`)) {
-      data.value = Object.assign({}, data.default, {
-        ...state.present.lobby.charactersList[data.index],
-      })
-    }
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      character: {
-        ...state.present.character,
-        ...data.value,
-      },
-    }))
-  },
-  setMonsterData: (state, data = { default: {}, index: null, value: {} }) => {
-    if (!data.hasOwnProperty(`value`)) {
-      data.value = Object.assign({}, data.default, {
-        ...state.present.lobby.monstersList[data.index],
-      })
-    }
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      monster: {
-        ...state.present.monster,
-        ...data.value,
-      },
-    }))
-  },
-  deleteTable: (state, data = { index: null, id: null }) => {
-    data.tablesList = state.present.lobby.tablesList
-      .reduce((acc, value, index) => {
-        if (index !== data.index && value.id !== data.id) {
-          acc.push(value)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        tablesList: data.tablesList,
-      },
-    }))
-  },
-  deleteCharacter: (state, data = { index: null, id: null }) => {
-    data.charactersList = state.present.lobby.charactersList
-      .reduce((acc, value, index) => {
-        if (index !== data.index && value.id !== data.id) {
-          acc.push(value)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        charactersList: data.charactersList,
-      },
-    }))
-  },
-  deleteMonster: (state, data = { index: null, id: null }) => {
-    data.monstersList = state.present.lobby.monstersList
-      .reduce((acc, value, index) => {
-        if (index !== data.index && value.id !== data.id) {
-          acc.push(value)
-        }
-
-        return acc
-      }, [])
-
-    // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
-    return nextStateHistory(state, Object.assign({}, state.present, {
-      lobby: {
-        ...state.present.lobby,
-        monstersList: data.monstersList,
-      },
-    }))
-  },
-  commitMessage: (state, data = { table: null, username: ``, senderID: null, senderName: ``, type: ``, text: [], action: {} }) => {
-    if (data.type === `typeAction`) {
-      // TODO
-    }
-
+  commitMessage: (state, data = { room: null, owner: ``, utc: null, title: ``, text: [] }) => {
     // // https://github.com/reduxjs/redux/issues/432#issuecomment-129145245
     return nextStateHistory(state, Object.assign({}, state.present, {
-      table: {
-        ...state.present.table,
-        messages: [...state.present.table.messages, data],
+      room: {
+        ...state.present.room,
+        messages: [...state.present.room.messages, data],
       },
     }))
   },

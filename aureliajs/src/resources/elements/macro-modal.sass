@@ -1,0 +1,141 @@
+macro-modal
+  display: block
+  width: 100%
+  height: 100%
+  position: absolute
+  left: 0rem
+  top: 0rem
+  z-index: 50
+
+  div.background
+    display: flex
+    flex-direction: column
+    flex-wrap: nowrap
+    justify-content: center
+    align-items: center
+    align-content: center
+    width: 100%
+    height: 100%
+    background-color: rgba(255,255,255,0.85)
+
+    div.form
+      display: flex
+      flex-direction: column
+      flex-wrap: nowrap
+      justify-content: center
+      align-items: center
+      align-content: center
+      width: 50%
+      height: 75%
+      padding: 2rem 0rem
+      background-color: rgb(255,255,255)
+      box-shadow: 0rem 0.5rem 1.5rem -0.75rem rgb(33,33,33)
+
+      div.form-group
+        display: flex
+        flex-direction: column
+        flex-wrap: nowrap
+        justify-content: flex-start
+        align-items: flex-start
+        align-content: flex-start
+        width: 80%
+        height: auto
+        margin-bottom: 1rem
+
+        span.title
+          display: inline-block
+          width: 100%
+          height: auto
+          padding: 0.5rem
+          font-size: 1.25rem
+          font-weight: bold
+          text-align: center
+          text-decoration: underline
+
+        label.title
+          width: 100%
+          height: 1.5rem
+
+          span.modal-error
+            display: inline-block
+            width: auto
+            height: auto
+            padding: 0rem
+            font-size: 1.25rem
+            font-weight: bold
+            text-align: center
+            text-decoration: underline
+            color: rgb(255,0,0)
+            font-size: 0.7rem
+            text-decoration: none
+
+          span.modal-error.hidden
+            color: rgba(255,0,0,0)
+
+        input.text-input,
+        textarea.textarea-input
+          width: 100%
+          padding: 0.5rem
+          border: 1px solid rgb(140,140,140)
+
+        input.text-input
+          height: 1.5rem
+
+        textarea.textarea-input
+          height: 5rem
+          resize: none
+
+      div.form-group.main-title
+        margin: 1rem 0rem auto 0rem
+
+      div.form-button-group
+        display: flex
+        flex-direction: row
+        flex-wrap: nowrap
+        justify-content: flex-end
+        align-items: center
+        align-content: center
+        width: 80%
+        height: auto
+        margin-bottom: auto
+
+        button.button
+          width: auto
+          height: 2rem
+          margin: 0rem 0.25rem
+          padding: 0rem 0.5rem
+          box-sizing: border-box
+          border-radius: 3px
+          background-color: rgb(252,252,252)
+          line-height: 1.5rem
+          font-size: 0.75rem
+          font-weight: bolder
+          text-transform: uppercase
+          cursor: pointer
+          user-select: none
+
+        button.button.cancel
+          border: 1px solid rgb(178,34,34)
+          color: rgb(178,34,34)
+
+        button.button.create
+          border: 1px solid rgb(70,130,180)
+          color: rgb(70,130,180)
+
+        button.button.cancel:hover,
+        button.button.create:hover
+          color: rgb(252,252,252)
+
+        button.button.cancel:hover
+          background-color: rgb(178,34,34)
+
+        button.button.create:hover
+          background-color: rgb(70,130,180)
+
+        button.button.create:disabled,
+        button.button.create:disabled:hover
+          border: 1px solid rgb(140,140,140)
+          background-color: rgb(252,252,252)
+          color: rgb(140,140,140)
+          cursor: default
+
