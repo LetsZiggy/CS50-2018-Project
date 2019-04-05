@@ -43,18 +43,14 @@ const Ctrl = {
 
     if (!result) {
       result = {
-        tables: [],
-        characters: [],
-        monsters: [],
+        rooms: [],
       }
     }
 
     result = {
       success: true,
       payload: {
-        tablesList: result.tables,
-        charactersList: result.characters,
-        monstersList: result.monsters,
+        roomsList: result.rooms,
       },
     }
 

@@ -63,11 +63,9 @@ export class \${className} {
 
   }
 }
-
 \`
   }
 }
-
 `
   }
 }

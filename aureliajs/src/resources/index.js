@@ -4,5 +4,6 @@ export function configure (config) {
     `./value-converters/slice-value-converter`,
     `./elements/nav-header.html`,
     `./elements/nav-footer.html`,
+    `./elements/macro-modal`,
   ])
 }
