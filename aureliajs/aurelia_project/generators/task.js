@@ -25,7 +25,7 @@ export default class TaskGenerator {
       })
   }
 
-  generateSource(functionName) {
+  generateSource (functionName) {
     return `import gulp from 'gulp'
 import changed from 'gulp-changed'
 import project from '../aurelia.json'
@@ -35,7 +35,6 @@ export default function ${functionName} () {
     .pipe(changed(project.paths.output, { extension: '.???' }))
     .pipe(gulp.dest(project.paths.output))
 }
-
 `
   }
 }

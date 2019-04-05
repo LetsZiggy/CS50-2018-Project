@@ -30,19 +30,6 @@ export function deepAssign (keys, val) {
   }
 }
 
-// Calculate all dependants
-export function calculateDependants (state, form) {
-  let obj = {}
-
-  // Array format
-  for (let dependant of form.dependants) {
-    let result = dependant({ ...state, ...obj }, form)
-    obj[result[0]] = result[1]
-  }
-
-  return obj
-}
-
 // Calculate die roll
 export function calculateDie (die) {
   return (Math.floor(Math.random() * die) + 1)
