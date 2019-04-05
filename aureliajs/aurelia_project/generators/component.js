@@ -25,8 +25,8 @@ export default class ElementGenerator {
             let className = this.project.makeClassName(name)
 
             self.project.root.add(
-              ProjectItem.text(path.join(subFolders, fileName + ".js"), this.generateJSSource(className)),
-              ProjectItem.text(path.join(subFolders, fileName + ".pug"), this.generatePUGSource(className))
+              ProjectItem.text(path.join(subFolders, fileName + `.js`), this.generateJSSource(className)),
+              ProjectItem.text(path.join(subFolders, fileName + `.pug`), this.generatePUGSource(className))
               // ProjectItem.text(path.join(subFolders, fileName + ".html"), this.generateHTMLSource(className))
             )
 
@@ -41,13 +41,13 @@ export default class ElementGenerator {
   constructor () {
     this.message = 'Hello world'
   }
-}`
+}
+`
   }
 
   generatePUGSource (className) {
     return `template
   h1 \${message}
-
 `
   }
 
