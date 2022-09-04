@@ -25,7 +25,6 @@
     "text": "github:requirejs/text#latest",
     "whatwg-fetch": "^3.0.0"
   },
-  "peerDependencies": {},
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
