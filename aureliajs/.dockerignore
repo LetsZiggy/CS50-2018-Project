@@ -1,0 +1,53 @@
+# ------------------------------ #
+# -----------General------------ #
+# ------------------------------ #
+
+# OS
+.DS_STORE
+.DS_Store
+Thumbs.db
+*.sh
+*.bat
+
+# Editors
+.editorconfig
+.history
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+
+# Dependencies
+node_modules
+.pnpm-debug.log
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Git
+.git
+.gitignore
+
+# Linters / Formatters
+eslint.config*
+.eslintrc*
+.eslintignore
+stylelint.config*
+.stylelintrc*
+.stylelintignore
+
+# ------------------------------ #
+# ------------Others------------ #
+# ------------------------------ #
+
+Views
+Controllers
+**/*.csproj
+**/*.cs
+**/*.cshtml
+**/*.Development.*
