@@ -1,0 +1,16 @@
+.git
+.svn
+.hg
+CVS
+node_modules
+
+scripts
+
+**/.*.js
+**/.*.ts
+**/*.js
+**/*.ts
+package-lock.json
+pnpm-lock.yaml
+pnpm-lock.yml
+yarn.lock

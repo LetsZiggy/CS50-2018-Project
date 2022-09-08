@@ -1,0 +1,74 @@
+{
+	"compileOnSave": false,
+	"atom": { "rewriteTsconfig": false },
+	"include": [
+		".*.js",
+		".*.ts",
+		"*.js",
+		"*.ts",
+		"aurelia_project/**/*.js",
+		"aurelia_project/**/*.ts",
+		"e2e/**/*.js",
+		"e2e/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.ts",
+		"tailwindcss-plugins/**/*.js",
+		"tailwindcss-plugins/**/*.ts",
+		"test/**/*.js",
+		"test/**/*.ts"
+	],
+	"exclude": [".swc", "node_modules", "scripts"],
+	"compilerOptions": {
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"strict": true,
+		"strictPropertyInitialization": false,
+
+		"module": "esnext",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"rootDir": ".",
+		"baseUrl": ".",
+		"paths": {
+			"src/*": ["src/*"],
+			"resources/*": ["src/resources/*"],
+			"attributes/*": ["src/resources/attributes/*"],
+			"bindingBehaviors/*": ["src/resources/binding-behaviors/*"],
+			"elements/*": ["src/resources/elements/*"],
+			"valueConverters/*": ["src/resources/value-converters/*"],
+			"helpers/*": ["src/resources/helpers/*"],
+			"services/*": ["src/resources/services/*"],
+			"modules/*": ["src/modules/*"],
+			"states/*": ["src/states/*"],
+			"store/*": ["src/store/*"]
+		},
+		"types": ["lodash-es", "@total-typescript/ts-reset"],
+
+		"declaration": false,
+		"importHelpers": true,
+		"removeComments": true,
+		"sourceMap": true,
+
+		"allowJs": true,
+		"checkJs": true,
+
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": ["esnext", "dom"],
+		"target": "es2017",
+
+		"incremental": true,
+		"tsBuildInfoFile": ".tsbuildinfo",
+
+		"skipLibCheck": true
+	}
+}
