@@ -1,0 +1,24 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"rootDir": "../",
+		"baseUrl": "../",
+		"paths": {
+			"src/*": ["src/*"],
+			"resources/*": ["src/resources/*"],
+			"attributes/*": ["src/resources/attributes/*"],
+			"bindingBehaviors/*": ["src/resources/binding-behaviors/*"],
+			"elements/*": ["src/resources/elements/*"],
+			"valueConverters/*": ["src/resources/value-converters/*"],
+			"helpers/*": ["src/resources/helpers/*"],
+			"services/*": ["src/resources/services/*"],
+			"modules/*": ["src/modules/*"],
+			"states/*": ["src/states/*"],
+			"store/*": ["src/store/*"],
+			"test/*": ["test/*"]
+		},
+		"types": ["jasmine", "lodash-es"],
+
+		"tsBuildInfoFile": ".tsbuildinfo"
+	}
+}

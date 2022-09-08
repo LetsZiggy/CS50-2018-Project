@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply absolute top-0 left-0 m-0 h-screen w-screen bg-gray-50 p-0 font-sans;
+	}
+}
+
+/*
+@layer components {
+}
+*/
+
+/*
+@layer utilities {
+}
+*/
