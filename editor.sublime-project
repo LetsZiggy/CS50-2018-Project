@@ -1,0 +1,108 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "root",
+			"folder_exclude_patterns": [
+				".git",
+				".hg",
+				".svn",
+				"CVS",
+				"node_modules",
+				"vendor",
+				".env",
+				"env",
+				".venv",
+				"venv",
+				".env.bak",
+				"env.bak",
+				".venv.bak",
+				"venv.bak",
+				"ENV",
+				"__pycache__",
+				".ruff_cache",
+				"*.egg-info",
+			],
+			"follow_symlinks": true,
+		},
+	],
+	"settings": {
+		// "default_encoding": "UTF-8",
+		// "default_line_ending": "unix",
+		"detect_indentation": true,
+		// "ensure_newline_at_eof_on_save": true,
+		"show_definitions": false,
+		"show_line_endings": true,
+		// "tab_size": 2,
+		// "translate_tabs_to_spaces": false,
+		// "trim_trailing_white_space_on_save": "all",
+		"use_tab_stops": true,
+		"word_wrap": true,
+
+		/* LSP */
+		"lsp_format_on_save": true,
+		"lsp_code_actions_on_save": {
+			"source.fixAll.json": false,
+			"source.fixAll.yaml": true,
+		},
+
+		"LSP": {
+			/* golangci-lint-langserver */
+			"golangci-lint-langserver": {
+				"enabled": true,
+				"initialization_options": {
+					"command": ["golangci-lint", "run", "--config", "${project_path}/golang/.golangci.yml", "--output.json.path=stdout", "--show-stats=false", "--issues-exit-code=1"],
+				},
+			},
+
+			/* LSP-gopls */
+			"LSP-gopls": {
+				"enabled": true,
+				"settings": {
+					"gopls.gofumpt": true,
+					"gopls.directoryFilters": [
+						"-**/node_modules",
+						"-**/vendor",
+						"-**/.venv",
+						"-${project_path}",
+						"-${project_path}/database",
+						"+${project_path}/golang",
+						"-${project_path}/golang/tmp",
+						"+${project_path}/pepper-generator",
+						"-${project_path}/pepper-generator/tmp",
+					],
+					// "gopls.env": {
+					// 	"GOPATH": "${project_path}",
+					// },
+				},
+			},
+
+			/* LSP-tailwindcss */
+			"LSP-tailwindcss": {
+				"enabled": true,
+				"settings": {
+					"tailwindCSS.emmetCompletions": true,
+					"tailwindCSS.classAttributes": ["class"],
+				},
+				"selector": "source.css | source.css.tailwind | text.html.basic",
+			},
+		},
+
+		"project_syntaxes": [
+			{
+				"syntax": "Go/HTML (Go)",
+				"rules": [
+					{ "globmatch": "**/*.html" },
+				],
+			},
+			{
+				"syntax": "Tailwind CSS/Tailwind CSS",
+				"rules": [
+					{ "globmatch": "**/*.css" },
+				],
+			},
+		],
+	},
+
+	"debugger_configurations": [],
+}

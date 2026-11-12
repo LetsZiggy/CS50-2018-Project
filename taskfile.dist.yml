@@ -1,0 +1,264 @@
+#$schema: 'https://taskfile.dev/schema.json'
+
+version: '3'
+
+silent: true
+
+tasks:
+  fix:prettier:
+    desc: task fix:prettier -- [<GLOB>?]
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}
+        if [ -z '{{.CLI_ARGS}}' ]; then
+          pnpm dlx prettier --config {{.TASKFILE_DIR}}/prettier.config.js --ignore-path {{.TASKFILE_DIR}}/.prettierignore --write {{.TASKFILE_DIR}}
+        else
+          pnpm dlx prettier --config {{.TASKFILE_DIR}}/prettier.config.js --ignore-path {{.TASKFILE_DIR}}/.prettierignore --write {{.CLI_ARGS}}
+        fi
+        cd "$CURRENT_DIR"
+
+  db:init:
+    desc: task db:init
+    cmd: sqlite3 {{.TASKFILE_DIR}}/database/db.sqlite < {{.TASKFILE_DIR}}/golang/sql/init.sql
+
+  db:up:
+    desc: task migrate:up -- [<"one"|VERSION>?]
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/golang/sql/migrations
+        if [ -z '{{.CLI_ARGS}}' ]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose up
+        elif [[ '{{.CLI_ARGS}}' == 'one' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose up-by-one
+        else
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose up-to '{{.CLI_ARGS}}'
+        fi
+        cd "$CURRENT_DIR"
+
+  db:down:
+    desc: task migrate:down -- [<"reset"|VERSION>?]
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/golang/sql/migrations
+        if [ -z '{{.CLI_ARGS}}' ]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose down
+        elif [[ '{{.CLI_ARGS}}' == 'reset' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose reset
+        else
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose down-to '{{.CLI_ARGS}}'
+        fi
+        cd "$CURRENT_DIR"
+
+  db:goose:
+    desc: task migrate:goose -- ["create"|"fix"|"redo"|"status"|"version"]
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/golang/sql/migrations
+        if [[ '{{.CLI_ARGS}}' == 'create'* ]]; then
+          ARGS=({{.CLI_ARGS}})
+          SUBCOMMAND="${ARGS[0]}"
+          FILENAME="${ARGS[1]}"
+          FILETYPE="${ARGS[2]}"
+
+          if [ -z "$FILENAME" -o -z "$FILETYPE" ]; then
+            echo 'task migrate:goose -- create <FILENAME> <FILETYPE>'
+          else
+            GOOSE_DRIVER=sqlite3                                        \
+            GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+            GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+            goose "$SUBCOMMAND" "$FILENAME" "$FILETYPE"
+          fi
+        elif [[ '{{.CLI_ARGS}}' == 'fix' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose fix
+        elif [[ '{{.CLI_ARGS}}' == 'redo' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose redo
+        elif [[ '{{.CLI_ARGS}}' == 'status' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose status
+        elif [[ '{{.CLI_ARGS}}' == 'version' ]]; then
+          GOOSE_DRIVER=sqlite3                                        \
+          GOOSE_DBSTRING={{.TASKFILE_DIR}}/database/db.sqlite         \
+          GOOSE_MIGRATION_DIR={{.TASKFILE_DIR}}/golang/sql/migrations \
+          goose version
+        else
+          echo 'expected arg not found; only ["create"|"fix"|"redo"|"status"|"version"] accepted'
+        fi
+        cd "$CURRENT_DIR"
+
+  db:generate:
+    desc: task db:generate
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/golang
+        sqlc generate
+        cd "$CURRENT_DIR"
+
+  upgrade-go-version:
+    desc: task upgrade-go-version
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/golang
+        go mod edit -go=$(sed -E -e 's/.*go([0-9]+\.[0-9]+\.[0-9]+).*/\1/' <<< $(go version))
+        echo "go.mod" && cat {{.TASKFILE_DIR}}/golang/go.mod | sed -n '3p' | sed -E -e 's/go ([0-9]+\.[0-9]+\.[0-9]+)/v\1/'
+        cd "$CURRENT_DIR"
+
+  get:pepper:
+    desc: task get:pepper
+    cmds:
+      - |
+        CURRENT_DIR=$(pwd)
+        cd {{.TASKFILE_DIR}}/pepper-generator
+        if ! [ -d '{{.TASKFILE_DIR}}/golang/tmp' ]; then mkdir -p '{{.TASKFILE_DIR}}/golang/tmp'; fi
+        PEPPER=$(go run . --length 128 --count 25)
+        (echo -e "$PEPPER" | sed -E -z -e 's/^(.*)\n+$/\1/') > {{.TASKFILE_DIR}}/golang/tmp/pepper-list.txt
+        (echo -e "$PEPPER" | tr -d "\n")                     > {{.TASKFILE_DIR}}/golang/tmp/pepper-string.txt
+        cd "$CURRENT_DIR"
+
+  get:resources:
+    desc: task get:resources
+    cmds:
+      - |
+        ### -------------------- get css/js files ------------------- ###
+        if ! [ -d '{{.TASKFILE_DIR}}/golang/static' ]; then mkdir -p '{{.TASKFILE_DIR}}/golang/static'; fi
+        if ! [ -d '{{.TASKFILE_DIR}}/golang/static/css' ]; then mkdir -p '{{.TASKFILE_DIR}}/golang/static/css'; fi
+        if ! [ -d '{{.TASKFILE_DIR}}/golang/static/js' ]; then mkdir -p '{{.TASKFILE_DIR}}/golang/static/js'; fi
+
+        EPOCH_RAW=$(sed -E -z -e 's,.*// \-\- TODOMVC\-RESOURCES::START \-\- //(.*)// \-\- TODOMVC\-RESOURCES::END \-\- //.*,\1,' {{.TASKFILE_DIR}}/golang/main.go)
+
+        ### https://cdn.jsdelivr.net/npm/unpoly@*.*.*/unpoly.{css,js} ###
+        EPOCH=$(sed -E -z -e 's,.*// unpoly::(v[0-9]+\.[0-9]+\.[0-9]+).*,\1,' <<< "$EPOCH_RAW")
+        CURL_EPOCH=$(curl https://github.com/unpoly/unpoly/tags | grep -P -z -o -e 'Link">v[^<]+</a>' | grep -P -z -o -e 'v[^<]+' | tr -d '\0' | sed -E -z -e 's/([a-z0-9])v/\1 v/g' -e 's/^(v[0-9]+\.[0-9]+\.[0-9]+) .*|^.*[a-z]+[0-9]+ (v[0-9]+\.[0-9]+\.[0-9]+) ?.*/\1\2/')
+        if [ "$CURL_EPOCH" != "$EPOCH" ]; then
+          if [ -f '{{.TASKFILE_DIR}}/golang/static/css/unpoly.css' ]; then rm -f {{.TASKFILE_DIR}}/golang/static/css/unpoly.css; fi
+          wget -O {{.TASKFILE_DIR}}/golang/static/css/unpoly.min.css "https://cdn.jsdelivr.net/npm/unpoly@${CURL_EPOCH:1}/unpoly.min.css"
+
+          if [ -f '{{.TASKFILE_DIR}}/golang/static/js/unpoly.js' ]; then rm -f {{.TASKFILE_DIR}}/golang/static/js/unpoly.js; fi
+          wget -O {{.TASKFILE_DIR}}/golang/static/js/unpoly.min.js "https://cdn.jsdelivr.net/npm/unpoly@${CURL_EPOCH:1}/unpoly.min.js"
+          wget -O {{.TASKFILE_DIR}}/golang/static/js/unpoly.min.js.map "https://cdn.jsdelivr.net/npm/unpoly@${CURL_EPOCH:1}/unpoly.min.js.map"
+
+          sed -E -i -z -e "s,(.*// unpoly::)v[0-9]+\.[0-9]+\.[0-9]+(.*),\1$CURL_EPOCH\2," {{.TASKFILE_DIR}}/golang/main.go
+        fi
+
+        cd "$CURRENT_DIR"
+
+  get:tailwindcss:
+    desc: task get:tailwindcss -- [<"init">?]
+    cmds:
+      - |
+        # Create `tailwind.css`
+        if [ '{{.CLI_ARGS}}' == 'init' ]; then
+          rm -f {{.TASKFILE_DIR}}/tailwind.css
+          touch {{.TASKFILE_DIR}}/tailwind.css
+          echo -e '/**\n * last_checked: 0\n * binary_version: v0.0.0\n */\n\n@import "tailwindcss";\n@plugin "@tailwindcss/forms" {\n  strategy: "class";\n}\n@plugin "@tailwindcss/typography";\n' > {{.TASKFILE_DIR}}/tailwind.css
+        fi
+
+        STALE_EPOCH=$(( $(date +%s) - 604800 ))
+        LAST_CHECKED=$(sed -E -z -e 's,^.*\n \* last_checked: ([0-9]+)\n.*$,\1,' {{.TASKFILE_DIR}}/tailwind.css)
+        LOCAL_VERSION=$(sed -E -z -e 's,^.*\n \* binary_version: (v[0-9]+\.[0-9]+\.[0-9]+)\n.*$,\1,' {{.TASKFILE_DIR}}/tailwind.css)
+
+        # Stale after 604800 seconds (7 days)
+        if [ "$LAST_CHECKED" -lt "$STALE_EPOCH" ]; then
+          GITHUB_VERSION=$(curl https://github.com/tailwindlabs/tailwindcss/releases | sed -E -z -e 's,(v[0-9]+\.[0-9]+\.[0-9]+).*$,\1,' -e 's,^.*(v[0-9]+\.[0-9]+\.[0-9]+),\1,')
+
+          # Check if latest binary version
+          if [ "$LOCAL_VERSION" != "$GITHUB_VERSION" ]; then
+            LOCAL_VERSION="$GITHUB_VERSION"
+
+            # Update tailwind.css `binary_version`
+            sed -E -i -z -e "s,^(.*\n \* binary_version: )v[0-9]+\.[0-9]+\.[0-9]+(\n.*)$,\1$LOCAL_VERSION\2," {{.TASKFILE_DIR}}/tailwind.css
+
+            # Remove old tailwindcss binaries
+            # find {{.TASKFILE_DIR}}/tmp -type f -name "tailwindcss-*.bin" -exec rm -rf '{}' \+;
+            find {{.TASKFILE_DIR}}/tmp -type f -name "tailwindcss-*.bin" -exec echo '{}' \+;
+
+            # Download new tailwindcss binary if binary stale
+            # wget -O "{{.TASKFILE_DIR}}/tmp/tailwindcss-$LOCAL_VERSION.bin" "https://github.com/tailwindlabs/tailwindcss/releases/download/$LOCAL_VERSION/tailwindcss-linux-x64"
+            # chmod 755 "{{.TASKFILE_DIR}}/tmp/tailwindcss-$LOCAL_VERSION.bin"
+
+            # Update 'pre_cmd' in .air.toml
+            sed -E -i -z -e "s|(.*[\r\n]\t\"tmp/tailwindcss-)v[0-9]+\.[0-9]+\.[0-9]+(.bin -i tailwind.css -o static/styles.css\",[\r\n].*)|\1$LOCAL_VERSION\2|" {{.TASKFILE_DIR}}/.air.toml
+          fi
+
+          # Update tailwind.css `last_checked`
+          sed -E -i -z -e "s,^(.*\n \* last_checked: )[0-9]+(\n.*)$,\1$(date +%s)\2," {{.TASKFILE_DIR}}/tailwind.css
+        fi
+
+  generate:css:
+    desc: task generate:css
+    cmds:
+      - task: get:tailwindcss
+      - |
+        LOCAL_VERSION=$(sed -E -z -e 's,^.*\n \* binary_version: (v[0-9]+\.[0-9]+\.[0-9]+)\n.*$,\1,' {{.TASKFILE_DIR}}/tailwind.css)
+
+        "{{.TASKFILE_DIR}}/tmp/tailwindcss-$LOCAL_VERSION.bin" -i {{.TASKFILE_DIR}}/tailwind.css -o {{.TASKFILE_DIR}}/static/styles.css
+
+  fix:template:
+    desc: task fix:template
+    cmds:
+      - |
+        gotmplfmt -w {{.TASKFILE_DIR}}/golang/static/html/
+
+  server:dev:
+    desc: task server:dev
+    cmds:
+      - task: get:pepper
+      - |
+        cd {{.TASKFILE_DIR}}/golang
+        clear
+        air -c .air.toml -- --db {{.TASKFILE_DIR}}/database/db.sqlite --salt $(date +'%s')
+
+  server:build:
+    desc: task server:build
+    cmds:
+      - task: get:pepper
+      - task: fix:prettier
+      - task: fix:template
+      - task: db:generate
+      - |
+        ### remove sourcemap requirement ###
+        sed -E -i -z -e 's,(.*)\n//# sourceMappingURL.*,\1,' {{.TASKFILE_DIR}}/golang/static/js/unpoly.min.js
+
+        cd {{.TASKFILE_DIR}}/golang
+        clear
+        go build -ldflags="-s -w" -o {{.TASKFILE_DIR}}/golang/tmp/server {{.TASKFILE_DIR}}/golang
+
+  server:test:
+    desc: task server:test
+    cmds:
+      - task: get:pepper
+      - |
+        cd {{.TASKFILE_DIR}}/golang
+        clear
+        echo 'TODO :: task server:test'
